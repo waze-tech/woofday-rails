@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+  <head>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>woof.day - Find Trusted Pet Care</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+    <style>
+      body { font-family: 'Nunito', sans-serif; }
+    </style>
+  </head>
+  <body class="min-h-full flex flex-col relative overflow-x-hidden" style="background-color: hsl(40, 33%, 98%); color: hsl(20, 14%, 16%);">
+    <!-- Blur decorations -->
+    <div class="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] rounded-full blur-decoration" style="background-color: rgba(236, 72, 153, 0.05);"></div>
+    <div class="absolute -bottom-[10%] -right-[10%] w-[40%] h-[40%] rounded-full blur-decoration" style="background-color: rgba(245, 158, 11, 0.1);"></div>
+
+    <!-- Header -->
+    <header class="sticky top-0 z-50 w-full border-b backdrop-blur-md" style="border-color: hsla(35, 20%, 88%, 0.5); background-color: hsla(40, 33%, 98%, 0.8);">
+      <div class="container mx-auto px-4 h-16 flex items-center justify-between">
+        <%= link_to root_path, class: "flex items-center gap-2 group outline-none" do %>
+          <div class="logo-icon w-10 h-10 rounded-xl flex items-center justify-center text-white shadow-lg group-hover:scale-105 group-active:scale-95 transition-transform duration-300" style="box-shadow: 0 4px 14px rgba(236, 72, 153, 0.2);">
+            <svg class="w-5 h-5 group-hover:rotate-12 transition-transform duration-300" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 10c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm6-1c0-3.31-2.69-6-6-6S6 5.69 6 9c0 1.66.68 3.16 1.76 4.24l.01.01c.17.17.35.33.53.48l.01.01c.17.14.35.27.54.39.56.36 1.17.64 1.82.82.28.08.57.14.86.18.31.04.62.07.94.07h.06c.32 0 .63-.03.94-.07.29-.04.58-.1.86-.18.65-.18 1.26-.46 1.82-.82.19-.12.37-.25.54-.39l.01-.01c.18-.15.36-.31.53-.48l.01-.01C17.32 12.16 18 10.66 18 9zM4.5 9c0 .5.04 1 .13 1.48-.08-.48-.13-.98-.13-1.48 0-4.41 3.59-8 8-8s8 3.59 8 8c0 .5-.05 1-.13 1.48.09-.48.13-.98.13-1.48 0-4.41-3.59-8-8-8s-8 3.59-8 8z"/>
+            </svg>
+          </div>
+          <span class="font-extrabold text-2xl tracking-tight" style="color: hsl(20, 14%, 16%);">
+            woof<span style="color: #EC4899;">.day</span>
+          </span>
+        <% end %>
+
+        <nav class="flex items-center gap-2">
+          <%= link_to search_path, class: "px-4 py-2 rounded-full text-sm font-semibold transition-all duration-200 #{request.path == '/search' ? 'text-white' : ''}", style: request.path == '/search' ? 'background-color: rgba(236, 72, 153, 0.1); color: #EC4899;' : 'color: rgba(20, 14%, 16%, 0.7);' do %>
+            Find Pros
+          <% end %>
+
+          <%= link_to new_pro_profile_path, class: "px-4 py-2 rounded-full text-sm font-semibold transition-all duration-200 hidden sm:block", style: "color: rgba(20, 14%, 16%, 0.7);" do %>
+            Become a Pro
+          <% end %>
+
+          <% if authenticated? %>
+            <%= link_to dashboard_path, class: "flex items-center gap-2 ml-1 rounded-full outline-none" do %>
+              <div class="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold transition-colors" style="background-color: rgba(236, 72, 153, 0.1); border: 2px solid rgba(236, 72, 153, 0.2); color: #EC4899;">
+                <%= Current.user.display_name[0].upcase %>
+              </div>
+              <span class="hidden md:block text-sm font-semibold max-w-[120px] truncate" style="color: rgba(20, 14%, 16%, 0.8);">
+                <%= Current.user.display_name %>
+              </span>
+            <% end %>
+          <% else %>
+            <%= link_to new_session_path, class: "flex items-center gap-1.5 ml-1 px-4 py-2 rounded-full text-sm font-semibold text-white shadow-md hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200", style: "background-color: #EC4899; box-shadow: 0 4px 14px rgba(236, 72, 153, 0.2);" do %>
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/>
+              </svg>
+              Sign In
+            <% end %>
+          <% end %>
+        </nav>
+      </div>
+    </header>
+
+    <!-- Flash Messages -->
+    <% if notice %>
+      <div class="border-b px-4 py-3" style="background-color: rgba(16, 185, 129, 0.1); border-color: rgba(16, 185, 129, 0.2);">
+        <div class="max-w-7xl mx-auto flex items-center gap-2" style="color: rgb(6, 95, 70);">
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+          </svg>
+          <%= notice %>
+        </div>
+      </div>
+    <% end %>
+
+    <% if alert %>
+      <div class="border-b px-4 py-3" style="background-color: rgba(239, 68, 68, 0.1); border-color: rgba(239, 68, 68, 0.2);">
+        <div class="max-w-7xl mx-auto flex items-center gap-2" style="color: rgb(153, 27, 27);">
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+          </svg>
+          <%= alert %>
+        </div>
+      </div>
+    <% end %>
+
+    <!-- Main Content -->
+    <main class="flex-1 flex flex-col relative z-0">
+      <%= yield %>
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t mt-auto" style="border-color: hsla(35, 20%, 88%, 0.5); background-color: rgba(255, 255, 255, 0.5);">
+      <div class="container mx-auto px-4 py-8 flex flex-col md:flex-row items-center justify-between gap-4">
+        <div class="flex items-center gap-2 font-medium" style="color: hsl(25, 10%, 45%);">
+          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 10c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
+          </svg>
+          <span>© <%= Time.current.year %> woof.day. Made with love for pets.</span>
+        </div>
+        <div class="flex gap-6 text-sm font-medium" style="color: hsl(25, 10%, 45%);">
+          <%= link_to "Find Pros", search_path, class: "hover:text-primary transition-colors", style: "--tw-text-opacity: 1;" %>
+          <a href="#" class="hover:text-primary transition-colors">Terms</a>
+          <a href="#" class="hover:text-primary transition-colors">Privacy</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

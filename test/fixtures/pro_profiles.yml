@@ -1,0 +1,19 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  user: one
+  business_name: MyString
+  bio: MyText
+  hourly_rate: 9.99
+  services: MyText
+  location: MyString
+  verified: false
+
+two:
+  user: two
+  business_name: MyString
+  bio: MyText
+  hourly_rate: 9.99
+  services: MyText
+  location: MyString
+  verified: false

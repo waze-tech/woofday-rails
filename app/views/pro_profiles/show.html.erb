@@ -1,0 +1,102 @@
+<div class="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
+  <!-- Profile Header -->
+  <div class="rounded-xl border p-6 mb-6" style="border-color: hsl(35, 20%, 88%); background-color: white;">
+    <div class="flex flex-col sm:flex-row items-start gap-6">
+      <div class="flex-shrink-0 w-24 h-24 rounded-full flex items-center justify-center text-white text-4xl font-bold" style="background-color: #EC4899;">
+        <%= @pro_profile.business_name[0].upcase %>
+      </div>
+      <div class="flex-1">
+        <div class="flex items-center gap-3 mb-2 flex-wrap">
+          <h1 class="text-2xl font-bold" style="color: hsl(20, 14%, 16%);"><%= @pro_profile.business_name %></h1>
+          <% if @pro_profile.verified? %>
+            <span class="inline-flex items-center rounded-full px-3 py-1 text-sm font-medium" style="background-color: rgba(16, 185, 129, 0.1); color: rgb(6, 95, 70);">✓ Verified</span>
+          <% end %>
+        </div>
+
+        <% if @pro_profile.location.present? %>
+          <div class="flex items-center gap-1.5 mb-2" style="color: hsl(25, 10%, 45%);">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+            </svg>
+            <span><%= @pro_profile.location %></span>
+          </div>
+        <% end %>
+
+        <% if @pro_profile.average_rating > 0 %>
+          <div class="flex items-center gap-2 mb-3">
+            <span class="text-lg" style="color: #F59E0B;">★ <%= @pro_profile.average_rating %></span>
+            <span style="color: hsl(25, 10%, 45%);">(<%= @pro_profile.total_reviews %> reviews)</span>
+          </div>
+        <% end %>
+
+        <p class="text-2xl font-bold" style="color: #EC4899;">$<%= @pro_profile.hourly_rate %>/hr</p>
+      </div>
+    </div>
+
+    <% if @pro_profile.bio.present? %>
+      <div class="mt-6 pt-6 border-t" style="border-color: hsl(35, 20%, 88%);">
+        <h3 class="font-semibold mb-2" style="color: hsl(20, 14%, 16%);">About</h3>
+        <p style="color: hsl(25, 10%, 45%);"><%= @pro_profile.bio %></p>
+      </div>
+    <% end %>
+
+    <% if @pro_profile.available_services.any? %>
+      <div class="mt-6 pt-6 border-t" style="border-color: hsl(35, 20%, 88%);">
+        <h3 class="font-semibold mb-3" style="color: hsl(20, 14%, 16%);">Services</h3>
+        <div class="flex flex-wrap gap-2">
+          <% @pro_profile.available_services.each do |service| %>
+            <span class="inline-flex items-center rounded-full px-3 py-1 text-sm font-medium" style="background-color: rgba(236, 72, 153, 0.1); color: #EC4899;">
+              <%= service %>
+            </span>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+
+    <div class="mt-6 pt-6 border-t" style="border-color: hsl(35, 20%, 88%);">
+      <% if authenticated? && Current.user.pets.any? %>
+        <%= link_to new_pro_profile_booking_path(@pro_profile), class: "inline-flex items-center gap-2 rounded-xl px-6 py-3 text-base font-bold text-white shadow-md transition", style: "background-color: #EC4899; box-shadow: 0 4px 14px rgba(236, 72, 153, 0.2);" do %>
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+          </svg>
+          Book Now
+        <% end %>
+      <% elsif authenticated? %>
+        <p style="color: hsl(25, 10%, 45%);">
+          <%= link_to "Add a pet", new_pet_path, class: "font-medium", style: "color: #EC4899;" %> to book with this pro.
+        </p>
+      <% else %>
+        <%= link_to "Sign in to book", new_session_path, class: "inline-flex items-center gap-2 rounded-xl px-6 py-3 text-base font-bold text-white shadow-md transition", style: "background-color: #EC4899; box-shadow: 0 4px 14px rgba(236, 72, 153, 0.2);" %>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- Reviews -->
+  <div class="rounded-xl border overflow-hidden" style="border-color: hsl(35, 20%, 88%); background-color: white;">
+    <div class="px-6 py-4 border-b" style="border-color: hsl(35, 20%, 88%);">
+      <h2 class="text-lg font-semibold" style="color: hsl(20, 14%, 16%);">Reviews</h2>
+    </div>
+    <div class="divide-y" style="border-color: hsl(35, 20%, 88%);">
+      <% if @reviews.empty? %>
+        <div class="p-8 text-center">
+          <div class="text-4xl mb-2">⭐</div>
+          <p style="color: hsl(25, 10%, 45%);">No reviews yet</p>
+        </div>
+      <% else %>
+        <% @reviews.each do |review| %>
+          <div class="p-6">
+            <div class="flex items-center justify-between mb-2">
+              <span class="font-medium" style="color: hsl(20, 14%, 16%);"><%= review.reviewer.display_name %></span>
+              <span style="color: #F59E0B;"><%= review.stars %></span>
+            </div>
+            <% if review.comment.present? %>
+              <p style="color: hsl(25, 10%, 45%);"><%= review.comment %></p>
+            <% end %>
+            <p class="text-sm mt-2" style="color: hsl(25, 10%, 45%);"><%= time_ago_in_words(review.created_at) %> ago</p>
+          </div>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+</div>

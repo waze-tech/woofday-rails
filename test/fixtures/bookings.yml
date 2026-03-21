@@ -1,0 +1,19 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  pet: one
+  pro_profile: one
+  start_time: 2026-03-21 16:40:15
+  end_time: 2026-03-21 16:40:15
+  status: MyString
+  total_price: 9.99
+  notes: MyText
+
+two:
+  pet: two
+  pro_profile: two
+  start_time: 2026-03-21 16:40:15
+  end_time: 2026-03-21 16:40:15
+  status: MyString
+  total_price: 9.99
+  notes: MyText

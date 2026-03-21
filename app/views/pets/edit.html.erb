@@ -1,0 +1,15 @@
+<div class="max-w-2xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
+  <div class="mb-8">
+    <h1 class="text-2xl font-bold" style="color: hsl(20, 14%, 16%);">Edit <%= @pet.name %></h1>
+  </div>
+
+  <%= render "form", pet: @pet %>
+
+  <div class="mt-8 pt-8 border-t" style="border-color: hsl(35, 20%, 88%);">
+    <%= button_to "Remove Pet", pet_path(@pet), 
+        method: :delete,
+        data: { turbo_confirm: "Are you sure you want to remove #{@pet.name}?" },
+        class: "text-sm font-medium",
+        style: "color: rgb(220, 38, 38);" %>
+  </div>
+</div>

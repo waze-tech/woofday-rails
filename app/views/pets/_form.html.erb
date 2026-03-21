@@ -1,0 +1,64 @@
+<%= form_with model: pet, class: "space-y-6" do |f| %>
+  <% if pet.errors.any? %>
+    <div class="rounded-xl border p-4" style="background-color: rgba(239, 68, 68, 0.1); border-color: rgba(239, 68, 68, 0.2);">
+      <% pet.errors.full_messages.each do |message| %>
+        <p class="text-sm" style="color: rgb(153, 27, 27);"><%= message %></p>
+      <% end %>
+    </div>
+  <% end %>
+
+  <div class="rounded-xl border p-6 space-y-6" style="background-color: white; border-color: hsl(35, 20%, 88%);">
+    <div>
+      <label class="block text-sm font-medium mb-1" style="color: hsl(25, 10%, 45%);">Name *</label>
+      <%= f.text_field :name, 
+          placeholder: "e.g., Max, Bella, Luna",
+          required: true,
+          class: "w-full rounded-xl border px-4 py-3 text-sm focus:outline-none focus:ring-2",
+          style: "border-color: hsl(35, 20%, 88%);" %>
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium mb-1" style="color: hsl(25, 10%, 45%);">Species *</label>
+      <%= f.select :species, 
+          [["🐕 Dog", "dog"], ["🐈 Cat", "cat"], ["🐦 Bird", "bird"], ["🐰 Other", "other"]],
+          { prompt: "Select species" },
+          required: true,
+          class: "w-full rounded-xl border px-4 py-3 text-sm focus:outline-none focus:ring-2",
+          style: "border-color: hsl(35, 20%, 88%);" %>
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium mb-1" style="color: hsl(25, 10%, 45%);">Breed</label>
+      <%= f.text_field :breed, 
+          placeholder: "e.g., Golden Retriever, Tabby",
+          class: "w-full rounded-xl border px-4 py-3 text-sm focus:outline-none focus:ring-2",
+          style: "border-color: hsl(35, 20%, 88%);" %>
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium mb-1" style="color: hsl(25, 10%, 45%);">Age (years)</label>
+      <%= f.number_field :age, 
+          min: 0, 
+          max: 30,
+          placeholder: "e.g., 3",
+          class: "w-full rounded-xl border px-4 py-3 text-sm focus:outline-none focus:ring-2",
+          style: "border-color: hsl(35, 20%, 88%);" %>
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium mb-1" style="color: hsl(25, 10%, 45%);">Special notes</label>
+      <%= f.text_area :notes, 
+          rows: 3,
+          placeholder: "Any allergies, medications, or special care instructions...",
+          class: "w-full rounded-xl border px-4 py-3 text-sm focus:outline-none focus:ring-2 resize-none",
+          style: "border-color: hsl(35, 20%, 88%);" %>
+    </div>
+  </div>
+
+  <div class="flex items-center gap-4">
+    <%= f.submit pet.persisted? ? "Save Changes" : "Add Pet", 
+        class: "rounded-xl px-6 py-3 text-base font-bold text-white shadow-md transition cursor-pointer",
+        style: "background-color: #EC4899; box-shadow: 0 4px 14px rgba(236, 72, 153, 0.2);" %>
+    <%= link_to "Cancel", dashboard_path, class: "font-medium", style: "color: hsl(25, 10%, 45%);" %>
+  </div>
+<% end %>

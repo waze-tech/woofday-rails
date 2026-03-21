@@ -1,0 +1,13 @@
+<div class="max-w-2xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
+  <div class="mb-8 text-center">
+    <div class="inline-flex h-14 w-14 items-center justify-center rounded-2xl text-white mb-4" style="background: linear-gradient(135deg, #EC4899, #06B6D4);">
+      <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 24 24">
+        <path d="M12 10c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
+      </svg>
+    </div>
+    <h1 class="text-2xl font-bold" style="color: hsl(20, 14%, 16%);">Add a Pet</h1>
+    <p class="mt-2" style="color: hsl(25, 10%, 45%);">Tell us about your furry friend</p>
+  </div>
+
+  <%= render "form", pet: @pet %>
+</div>

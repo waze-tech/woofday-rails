@@ -1,0 +1,68 @@
+<div class="max-w-2xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
+  <div class="mb-8">
+    <h1 class="text-2xl font-bold" style="color: hsl(20, 14%, 16%);">Book with <%= @pro_profile.business_name %></h1>
+    <p style="color: #EC4899;">$<%= @pro_profile.hourly_rate %>/hr</p>
+  </div>
+
+  <%= form_with model: @booking, url: pro_profile_bookings_path(@pro_profile), class: "space-y-6" do |f| %>
+    <% if @booking.errors.any? %>
+      <div class="rounded-xl border p-4" style="background-color: rgba(239, 68, 68, 0.1); border-color: rgba(239, 68, 68, 0.2);">
+        <% @booking.errors.full_messages.each do |message| %>
+          <p class="text-sm" style="color: rgb(153, 27, 27);"><%= message %></p>
+        <% end %>
+      </div>
+    <% end %>
+
+    <div class="rounded-xl border p-6 space-y-6" style="background-color: white; border-color: hsl(35, 20%, 88%);">
+      <div>
+        <label class="block text-sm font-medium mb-1" style="color: hsl(25, 10%, 45%);">Which pet?</label>
+        <% if @pets.empty? %>
+          <p style="color: hsl(25, 10%, 45%);">
+            You need to <%= link_to "add a pet", new_pet_path, class: "font-medium", style: "color: #EC4899;" %> first.
+          </p>
+        <% else %>
+          <%= f.collection_select :pet_id, @pets, :id, :display_name,
+              { prompt: "Select a pet" },
+              required: true,
+              class: "w-full rounded-xl border px-4 py-3 text-sm focus:outline-none focus:ring-2",
+              style: "border-color: hsl(35, 20%, 88%);" %>
+        <% end %>
+      </div>
+
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-medium mb-1" style="color: hsl(25, 10%, 45%);">Start Time</label>
+          <%= f.datetime_local_field :start_time,
+              required: true,
+              min: Time.current.strftime("%Y-%m-%dT%H:%M"),
+              class: "w-full rounded-xl border px-4 py-3 text-sm focus:outline-none focus:ring-2",
+              style: "border-color: hsl(35, 20%, 88%);" %>
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1" style="color: hsl(25, 10%, 45%);">End Time</label>
+          <%= f.datetime_local_field :end_time,
+              required: true,
+              class: "w-full rounded-xl border px-4 py-3 text-sm focus:outline-none focus:ring-2",
+              style: "border-color: hsl(35, 20%, 88%);" %>
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium mb-1" style="color: hsl(25, 10%, 45%);">Special Instructions</label>
+        <%= f.text_area :notes,
+            rows: 3,
+            placeholder: "Any special requests or information the pro should know...",
+            class: "w-full rounded-xl border px-4 py-3 text-sm focus:outline-none focus:ring-2 resize-none",
+            style: "border-color: hsl(35, 20%, 88%);" %>
+      </div>
+    </div>
+
+    <div class="flex items-center gap-4">
+      <%= f.submit "Request Booking", 
+          class: "rounded-xl px-6 py-3 text-base font-bold text-white shadow-md transition cursor-pointer",
+          style: "background-color: #EC4899; box-shadow: 0 4px 14px rgba(236, 72, 153, 0.2);",
+          disabled: @pets.empty? %>
+      <%= link_to "Cancel", pro_profile_path(@pro_profile), class: "font-medium", style: "color: hsl(25, 10%, 45%);" %>
+    </div>
+  <% end %>
+</div>
