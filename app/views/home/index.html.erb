@@ -118,13 +118,11 @@
     </div>
 
     <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-      <!-- Pet Grooming - Scissors -->
+      <!-- Pet Grooming -->
       <%= link_to search_path(service: "grooming"), class: "group block" do %>
         <div class="border-2 rounded-3xl p-8 transition-all hover:shadow-lg hover:-translate-y-1" style="background-color: #FAF7F2; border-color: rgba(139, 111, 71, 0.15);">
           <div class="w-16 h-16 rounded-2xl flex items-center justify-center mb-4" style="background-color: #E8DFD3;">
-            <svg class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="#3D2E1F" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="6" cy="6" r="3"/><path d="M8.12 8.12 12 12"/><path d="M20 4 8.12 15.88"/><circle cx="6" cy="18" r="3"/><path d="M14.8 14.8 20 20"/><path d="M8.12 15.88 12 12"/>
-            </svg>
+            <%= image_tag "icons/grooming.png", class: "w-10 h-10", alt: "Pet Grooming" %>
           </div>
           <h3 class="text-xl mb-2" style="font-weight: 600; color: #3D2E1F;">Pet Grooming</h3>
           <p class="mb-4" style="color: rgba(61, 46, 31, 0.6);">Professional styling & spa treatments</p>
@@ -134,13 +132,11 @@
         </div>
       <% end %>
 
-      <!-- Dog Walking - Footprints -->
+      <!-- Dog Walking -->
       <%= link_to search_path(service: "walking"), class: "group block" do %>
         <div class="border-2 rounded-3xl p-8 transition-all hover:shadow-lg hover:-translate-y-1" style="background-color: #FAF7F2; border-color: rgba(139, 111, 71, 0.15);">
           <div class="w-16 h-16 rounded-2xl flex items-center justify-center mb-4" style="background-color: #D4C4B0;">
-            <svg class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="#3D2E1F" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M4 16v-2.38C4 11.5 2.97 10.5 3 8c.03-2.72 1.49-6 4.5-6C9.37 2 10 3.8 10 5.5c0 3.11-2 5.66-2 8.68V16a2 2 0 1 1-4 0Z"/><path d="M20 20v-2.38c0-2.12 1.03-3.12 1-5.62-.03-2.72-1.49-6-4.5-6C14.63 6 14 7.8 14 9.5c0 3.11 2 5.66 2 8.68V20a2 2 0 1 0 4 0Z"/>
-            </svg>
+            <%= image_tag "icons/dog-walking.png", class: "w-10 h-10", alt: "Dog Walking" %>
           </div>
           <h3 class="text-xl mb-2" style="font-weight: 600; color: #3D2E1F;">Dog Walking</h3>
           <p class="mb-4" style="color: rgba(61, 46, 31, 0.6);">Daily walks & exercise routines</p>
@@ -150,13 +146,11 @@
         </div>
       <% end %>
 
-      <!-- Pet Sitting - Home -->
+      <!-- Pet Sitting -->
       <%= link_to search_path(service: "sitting"), class: "group block" do %>
         <div class="border-2 rounded-3xl p-8 transition-all hover:shadow-lg hover:-translate-y-1" style="background-color: #FAF7F2; border-color: rgba(139, 111, 71, 0.15);">
           <div class="w-16 h-16 rounded-2xl flex items-center justify-center mb-4" style="background-color: #C6A876;">
-            <svg class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="#3D2E1F" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
-            </svg>
+            <%= image_tag "icons/pet-sitting.png", class: "w-10 h-10", alt: "Pet Sitting" %>
           </div>
           <h3 class="text-xl mb-2" style="font-weight: 600; color: #3D2E1F;">Pet Sitting</h3>
           <p class="mb-4" style="color: rgba(61, 46, 31, 0.6);">In-home care & overnight stays</p>
@@ -166,13 +160,11 @@
         </div>
       <% end %>
 
-      <!-- Training - Award -->
+      <!-- Training -->
       <%= link_to search_path(service: "training"), class: "group block" do %>
         <div class="border-2 rounded-3xl p-8 transition-all hover:shadow-lg hover:-translate-y-1" style="background-color: #FAF7F2; border-color: rgba(139, 111, 71, 0.15);">
           <div class="w-16 h-16 rounded-2xl flex items-center justify-center mb-4" style="background-color: #A68B5B;">
-            <svg class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="#3D2E1F" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round">
-              <path d="m15.477 12.89 1.515 8.526a.5.5 0 0 1-.81.47l-3.58-2.687a1 1 0 0 0-1.197 0l-3.586 2.686a.5.5 0 0 1-.81-.469l1.514-8.526"/><circle cx="12" cy="8" r="6"/>
-            </svg>
+            <%= image_tag "icons/training.png", class: "w-10 h-10", alt: "Training" %>
           </div>
           <h3 class="text-xl mb-2" style="font-weight: 600; color: #3D2E1F;">Training</h3>
           <p class="mb-4" style="color: rgba(61, 46, 31, 0.6);">Behavior & obedience classes</p>
