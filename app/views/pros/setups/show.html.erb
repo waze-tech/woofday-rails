@@ -1,0 +1,42 @@
+<div class="min-h-screen" style="background: linear-gradient(to bottom right, #FAF7F2, #f9f6f1);">
+  <!-- Header -->
+  <header class="border-b sticky top-0 z-50 backdrop-blur-md" style="background-color: rgba(255, 255, 255, 0.8); border-color: rgba(139, 111, 71, 0.15);">
+    <div class="max-w-4xl mx-auto px-6 py-5 flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <%= link_to root_path do %>
+          <img src="/logo.png" alt="Woof.Day" class="h-10">
+        <% end %>
+        <span class="px-2.5 py-1 rounded-full text-xs" style="background-color: rgba(139, 111, 71, 0.1); color: #8B6F47;">Pro</span>
+      </div>
+      <%= link_to "Save & Exit", root_path, class: "text-sm transition-colors", style: "color: rgba(61, 46, 31, 0.6);" %>
+    </div>
+  </header>
+
+  <!-- Progress Bar -->
+  <div class="backdrop-blur-sm border-b sticky top-[73px] z-40" style="background-color: rgba(255, 255, 255, 0.5); border-color: rgba(139, 111, 71, 0.15);">
+    <div class="max-w-4xl mx-auto px-6 py-6">
+      <div class="flex items-center justify-between mb-3">
+        <div class="flex items-center gap-2">
+          <span class="text-sm" style="color: #3D2E1F;">Step <%= @step %> of 3</span>
+          <svg class="w-4 h-4" fill="none" stroke="#8B6F47" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/></svg>
+        </div>
+        <span class="text-sm" style="color: #8B6F47;"><%= (@step.to_f / 3 * 100).round %>%</span>
+      </div>
+      <div class="h-2.5 rounded-full overflow-hidden shadow-inner" style="background-color: #E8DFD3;">
+        <div class="h-full rounded-full transition-all duration-500 ease-out shadow-lg" style="background: linear-gradient(to right, #8B6F47, #c4956c); width: <%= (@step.to_f / 3 * 100).round %>%;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="max-w-4xl mx-auto px-6 py-16">
+    <% case @step %>
+    <% when 1 %>
+      <%= render "pros/setups/step_instagram" %>
+    <% when 2 %>
+      <%= render "pros/setups/step_profile" %>
+    <% when 3 %>
+      <%= render "pros/setups/step_services" %>
+    <% end %>
+  </div>
+</div>

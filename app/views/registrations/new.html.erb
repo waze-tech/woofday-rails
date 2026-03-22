@@ -1,81 +1,129 @@
-<div class="min-h-screen flex items-center justify-center px-4 py-12" style="background-color: #FAF7F2;">
-  <div class="w-full max-w-lg">
-    <div class="text-center mb-10">
-      <img src="/logo.png" alt="Woof.Day" class="h-24 mx-auto mb-4">
-      <h1 class="text-2xl font-bold" style="color: #3D2E1F;">Welcome to woof.day!</h1>
-      <p class="mt-2" style="color: rgba(61, 46, 31, 0.6);">How would you like to use woof.day?</p>
+<div class="min-h-screen" style="background-color: #FAF7F2;">
+  <!-- Header -->
+  <header class="border-b" style="background-color: rgba(255, 255, 255, 0.5); border-color: rgba(139, 111, 71, 0.15);">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+      <%= link_to root_path do %>
+        <img src="/logo.png" alt="Woof.Day" class="h-10">
+      <% end %>
+      <div class="text-sm" style="color: rgba(61, 46, 31, 0.6);">
+        Already have an account?
+        <%= link_to "Sign in", new_session_path, class: "hover:underline", style: "color: #8B6F47;" %>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <div class="max-w-2xl mx-auto px-6 py-16">
+    <!-- Hero Text -->
+    <div class="text-center mb-12">
+      <h1 class="mb-4" style="font-family: Georgia, serif; font-size: 2.5rem; line-height: 1.2; color: #3D2E1F;">
+        Create your account
+      </h1>
+      <p style="font-size: 1.125rem; color: rgba(61, 46, 31, 0.6);">
+        Join the trusted pet care community
+      </p>
     </div>
 
-    <%= form_with model: User.new, url: registrations_path, class: "space-y-6", data: { controller: "role-select" } do |form| %>
-      <% if @user&.errors&.any? %>
-        <div class="rounded-xl border-2 p-4" style="background-color: rgba(239, 68, 68, 0.1); border-color: rgba(239, 68, 68, 0.2);">
+    <%= form_with model: @user, url: registrations_path, data: { controller: "signup", signup_target: "form" } do |form| %>
+      <% if @user.errors.any? %>
+        <div class="rounded-xl border-2 p-4 mb-8" style="background-color: rgba(239, 68, 68, 0.1); border-color: rgba(239, 68, 68, 0.2);">
           <% @user.errors.full_messages.each do |message| %>
             <p class="text-sm" style="color: rgb(153, 27, 27);"><%= message %></p>
           <% end %>
         </div>
       <% end %>
 
-      <!-- Role Selection -->
-      <div class="space-y-4">
-        <label class="role-card block w-full rounded-2xl border-2 p-6 text-left cursor-pointer transition-all hover:shadow-md hover:-translate-y-0.5" style="border-color: rgba(139, 111, 71, 0.15); background-color: white;" onclick="this.querySelector('input').checked = true; document.querySelectorAll('.role-card').forEach(c => { c.style.borderColor = 'rgba(139, 111, 71, 0.15)'; c.style.backgroundColor = 'white'; }); this.style.borderColor = '#8B6F47'; this.style.backgroundColor = 'rgba(139, 111, 71, 0.05)';">
-          <%= form.radio_button :role, "pet_owner", class: "sr-only" %>
-          <div class="flex items-start gap-4">
-            <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl" style="background-color: #E8DFD3;">
-              <img src="https://cdn-icons-png.freepik.com/512/5020/5020290.png" class="w-6 h-6" alt="Pet Owner">
+      <!-- Role Selection (before account details) -->
+      <div data-signup-target="roleSection" class="mb-8">
+        <div class="grid md:grid-cols-2 gap-6">
+          <label class="role-card block w-full rounded-2xl border-2 p-8 text-center cursor-pointer transition-all hover:shadow-lg hover:-translate-y-0.5" style="border-color: rgba(139, 111, 71, 0.15); background-color: white;" data-action="click->signup#selectRole" data-role="pet_owner">
+            <%= form.radio_button :role, "pet_owner", class: "sr-only", data: { signup_target: "roleInput" } %>
+            <div class="w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center" style="background-color: #E8DFD3;">
+              <img src="https://cdn-icons-png.freepik.com/512/5020/5020290.png" class="w-8 h-8" alt="Pet Owner">
             </div>
-            <div>
-              <h3 class="text-lg font-bold" style="color: #3D2E1F;">I'm a Pet Owner</h3>
-              <p class="mt-1 text-sm" style="color: rgba(61, 46, 31, 0.6);">Find and book trusted pet care professionals in your area</p>
+            <h3 class="mb-3" style="font-size: 1.125rem; font-weight: 600; color: #3D2E1F;">Pet Owner</h3>
+            <p class="text-sm mb-4" style="color: rgba(61, 46, 31, 0.6);">
+              Find trusted professionals for grooming, walking, sitting and more
+            </p>
+            <div class="opacity-0 group-hover:opacity-100 transition-opacity" style="color: #8B6F47;">
+              Get started →
             </div>
-          </div>
-        </label>
+          </label>
 
-        <label class="role-card block w-full rounded-2xl border-2 p-6 text-left cursor-pointer transition-all hover:shadow-md hover:-translate-y-0.5" style="border-color: rgba(139, 111, 71, 0.15); background-color: white;" onclick="this.querySelector('input').checked = true; document.querySelectorAll('.role-card').forEach(c => { c.style.borderColor = 'rgba(139, 111, 71, 0.15)'; c.style.backgroundColor = 'white'; }); this.style.borderColor = '#8B6F47'; this.style.backgroundColor = 'rgba(139, 111, 71, 0.05)';">
-          <%= form.radio_button :role, "pro", class: "sr-only" %>
-          <div class="flex items-start gap-4">
-            <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl" style="background-color: #D4C4B0;">
-              <img src="https://cdn-icons-png.freepik.com/512/6381/6381356.png" class="w-6 h-6" alt="Pet Care Pro">
+          <label class="role-card block w-full rounded-2xl border-2 p-8 text-center cursor-pointer transition-all hover:shadow-lg hover:-translate-y-0.5" style="border-color: rgba(139, 111, 71, 0.15); background-color: white;" data-action="click->signup#selectRole" data-role="pro">
+            <%= form.radio_button :role, "pro", class: "sr-only", data: { signup_target: "roleInput" } %>
+            <div class="w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center" style="background-color: #D4C4B0;">
+              <img src="https://cdn-icons-png.freepik.com/512/6381/6381356.png" class="w-8 h-8" alt="Pet Care Pro">
             </div>
-            <div>
-              <h3 class="text-lg font-bold" style="color: #3D2E1F;">I'm a Pet Care Pro</h3>
-              <p class="mt-1 text-sm" style="color: rgba(61, 46, 31, 0.6);">List your services, manage bookings, and grow your business</p>
+            <h3 class="mb-3" style="font-size: 1.125rem; font-weight: 600; color: #3D2E1F;">Pet Care Pro</h3>
+            <p class="text-sm mb-4" style="color: rgba(61, 46, 31, 0.6);">
+              Connect with pet owners and grow your business with our trusted platform
+            </p>
+            <div class="opacity-0 group-hover:opacity-100 transition-opacity" style="color: #8B6F47;">
+              Get started →
             </div>
-          </div>
-        </label>
-      </div>
-
-      <!-- Account Details -->
-      <div class="rounded-2xl border-2 p-6 space-y-5" style="background-color: white; border-color: rgba(139, 111, 71, 0.15);">
-        <div>
-          <label class="block text-sm font-medium mb-2" style="color: #3D2E1F;">Email</label>
-          <%= form.email_field :email_address, required: true, autocomplete: "email", placeholder: "you@example.com",
-              class: "w-full rounded-xl border-2 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-offset-0",
-              style: "border-color: rgba(139, 111, 71, 0.2); color: #3D2E1F; --tw-ring-color: rgba(139, 111, 71, 0.3);" %>
-        </div>
-
-        <div>
-          <label class="block text-sm font-medium mb-2" style="color: #3D2E1F;">Password</label>
-          <%= form.password_field :password, required: true, autocomplete: "new-password",
-              class: "w-full rounded-xl border-2 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-offset-0",
-              style: "border-color: rgba(139, 111, 71, 0.2); color: #3D2E1F; --tw-ring-color: rgba(139, 111, 71, 0.3);" %>
-        </div>
-
-        <div>
-          <label class="block text-sm font-medium mb-2" style="color: #3D2E1F;">Confirm Password</label>
-          <%= form.password_field :password_confirmation, required: true, autocomplete: "new-password",
-              class: "w-full rounded-xl border-2 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-offset-0",
-              style: "border-color: rgba(139, 111, 71, 0.2); color: #3D2E1F; --tw-ring-color: rgba(139, 111, 71, 0.3);" %>
+          </label>
         </div>
       </div>
 
-      <div>
-        <%= form.submit "Continue", class: "w-full inline-flex items-center justify-center gap-2 rounded-xl px-8 py-3.5 text-base font-bold text-white shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all cursor-pointer", style: "background-color: #8B6F47;" %>
+      <!-- Account Details (shown after role selection) -->
+      <div data-signup-target="accountSection" class="hidden">
+        <!-- Selection Badge -->
+        <div class="mb-8 flex items-center justify-between p-4 rounded-xl border" style="background-color: rgba(139, 111, 71, 0.05); border-color: rgba(139, 111, 71, 0.15);">
+          <div class="flex items-center gap-3">
+            <svg class="w-5 h-5" fill="none" stroke="#8B6F47" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            <span data-signup-target="roleLabel" style="color: #3D2E1F;">Signing up as Pet Owner</span>
+          </div>
+          <button type="button" data-action="click->signup#changeRole" class="text-sm hover:underline" style="color: #8B6F47;">
+            Change
+          </button>
+        </div>
+
+        <!-- Form Fields -->
+        <div class="rounded-2xl border-2 p-8 space-y-6" style="background-color: white; border-color: rgba(139, 111, 71, 0.15);">
+          <div class="space-y-2">
+            <%= form.label :email_address, "Email address", class: "text-sm font-medium", style: "color: #3D2E1F;" %>
+            <%= form.email_field :email_address, required: true, autocomplete: "email", placeholder: "you@example.com", class: "w-full h-12 px-4 border-2 rounded-xl focus:outline-none focus:ring-2", style: "border-color: rgba(139, 111, 71, 0.2); color: #3D2E1F; --tw-ring-color: rgba(139, 111, 71, 0.3);" %>
+          </div>
+
+          <div class="space-y-2">
+            <%= form.label :password, "Password", class: "text-sm font-medium", style: "color: #3D2E1F;" %>
+            <%= form.password_field :password, required: true, autocomplete: "new-password", placeholder: "At least 8 characters", class: "w-full h-12 px-4 border-2 rounded-xl focus:outline-none focus:ring-2", style: "border-color: rgba(139, 111, 71, 0.2); color: #3D2E1F; --tw-ring-color: rgba(139, 111, 71, 0.3);" %>
+            <p class="text-xs" style="color: rgba(61, 46, 31, 0.5);">Must be at least 8 characters long</p>
+          </div>
+
+          <div class="space-y-2">
+            <%= form.label :password_confirmation, "Confirm password", class: "text-sm font-medium", style: "color: #3D2E1F;" %>
+            <%= form.password_field :password_confirmation, required: true, autocomplete: "new-password", placeholder: "Re-enter your password", class: "w-full h-12 px-4 border-2 rounded-xl focus:outline-none focus:ring-2", style: "border-color: rgba(139, 111, 71, 0.2); color: #3D2E1F; --tw-ring-color: rgba(139, 111, 71, 0.3);" %>
+          </div>
+        </div>
+
+        <div class="pt-6">
+          <%= form.submit "Create Account", class: "w-full h-12 text-white rounded-xl font-bold hover:shadow-lg hover:-translate-y-0.5 transition-all cursor-pointer", style: "background-color: #8B6F47;" %>
+        </div>
+
+        <p class="text-xs text-center pt-4" style="color: rgba(61, 46, 31, 0.6);">
+          By creating an account, you agree to our Terms of Service and Privacy Policy
+        </p>
       </div>
     <% end %>
 
-    <p class="text-center text-sm" style="color: rgba(61, 46, 31, 0.6);">
-      Already have an account?
-      <%= link_to "Sign in", new_session_path, class: "font-semibold hover:underline", style: "color: #8B6F47;" %>
-    </p>
+    <!-- Trust Indicators -->
+    <div data-signup-target="trustSection" class="mt-16 pt-12 border-t" style="border-color: rgba(139, 111, 71, 0.15);">
+      <div class="grid md:grid-cols-3 gap-8 text-center">
+        <div>
+          <div class="text-3xl mb-2" style="font-family: Georgia, serif; color: #8B6F47;">10k+</div>
+          <p class="text-sm" style="color: rgba(61, 46, 31, 0.6);">Verified Professionals</p>
+        </div>
+        <div>
+          <div class="text-3xl mb-2" style="font-family: Georgia, serif; color: #8B6F47;">50k+</div>
+          <p class="text-sm" style="color: rgba(61, 46, 31, 0.6);">Happy Pet Owners</p>
+        </div>
+        <div>
+          <div class="text-3xl mb-2" style="font-family: Georgia, serif; color: #8B6F47;">4.9★</div>
+          <p class="text-sm" style="color: rgba(61, 46, 31, 0.6);">Average Rating</p>
+        </div>
+      </div>
+    </div>
   </div>
 </div>

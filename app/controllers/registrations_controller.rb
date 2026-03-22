@@ -2,6 +2,7 @@ class RegistrationsController < ApplicationController
   allow_unauthenticated_access
 
   def new
+    @user = User.new
   end
 
   def create
@@ -9,7 +10,7 @@ class RegistrationsController < ApplicationController
 
     if @user.save
       start_new_session_for(@user)
-      redirect_to root_path, notice: "Welcome to Woof Day!"
+      redirect_after_signup
     else
       render :new, status: :unprocessable_entity
     end
@@ -17,7 +18,15 @@ class RegistrationsController < ApplicationController
 
   private
 
-  def user_params
-    params.require(:user).permit(:email_address, :password, :password_confirmation, :role)
-  end
+    def redirect_after_signup
+      if @user.pro?
+        redirect_to pros_setup_path, notice: "Let's set up your professional profile!"
+      else
+        redirect_to root_path, notice: "Welcome to woof.day!"
+      end
+    end
+
+    def user_params
+      params.require(:user).permit(:email_address, :password, :password_confirmation, :role)
+    end
 end

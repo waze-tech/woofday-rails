@@ -1,0 +1,67 @@
+<%= turbo_frame_tag "new_service" do %>
+  <div data-controller="service-form">
+    <!-- Add Service Button -->
+    <button type="button" data-action="click->service-form#toggle" data-service-form-target="trigger" class="w-full py-16 border-2 border-dashed rounded-3xl hover:shadow-lg transition-all duration-300 flex flex-col items-center justify-center gap-5 group" style="border-color: rgba(139, 111, 71, 0.3); color: rgba(61, 46, 31, 0.6);">
+      <div class="w-20 h-20 rounded-2xl flex items-center justify-center transition-all duration-300 shadow-md" style="background: linear-gradient(to bottom right, #E8DFD3, #f0ebe4);">
+        <svg class="w-8 h-8 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+      </div>
+      <div class="text-center">
+        <p class="font-medium text-lg mb-1" style="color: #3D2E1F;">Add a Service</p>
+        <p class="text-sm" style="color: rgba(61, 46, 31, 0.4);">Start building your offerings</p>
+      </div>
+    </button>
+
+    <!-- Service Form (hidden by default) -->
+    <div data-service-form-target="form" class="hidden rounded-3xl border-2 p-12 space-y-8 shadow-xl" style="background-color: white; border-color: rgba(139, 111, 71, 0.15);">
+      <div class="flex items-center justify-between">
+        <h3 style="font-size: 1.25rem; font-weight: 600; color: #3D2E1F;">New Service</h3>
+        <button type="button" data-action="click->service-form#toggle" class="p-2.5 rounded-2xl transition-all" style="background-color: rgba(139, 111, 71, 0.05);">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <%= form_with url: pros_setup_services_path, class: "space-y-6" do |f| %>
+        <div class="space-y-4">
+          <%= f.label :name, "Service Name", class: "text-sm", style: "color: rgba(61, 46, 31, 0.7);" %>
+          <%= f.text_field :name, placeholder: "e.g., Full Grooming Package", required: true, class: "w-full px-5 py-4 border-2 rounded-2xl focus:outline-none focus:ring-2 transition-all shadow-sm hover:shadow-md", style: "border-color: rgba(139, 111, 71, 0.2); color: #3D2E1F; --tw-ring-color: rgba(139, 111, 71, 0.2);" %>
+        </div>
+
+        <div class="space-y-4">
+          <label class="text-sm flex items-center gap-2" style="color: rgba(61, 46, 31, 0.7);">
+            Description <span style="color: rgba(61, 46, 31, 0.4);">(Optional)</span>
+          </label>
+          <%= f.text_area :description, rows: 3, placeholder: "What's included in this service?", class: "w-full px-5 py-4 border-2 rounded-2xl focus:outline-none focus:ring-2 resize-none transition-all leading-relaxed shadow-sm hover:shadow-md", style: "border-color: rgba(139, 111, 71, 0.2); color: #3D2E1F; --tw-ring-color: rgba(139, 111, 71, 0.2);" %>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-6">
+          <div class="space-y-4">
+            <%= f.label :price, "Price", class: "text-sm", style: "color: rgba(61, 46, 31, 0.7);" %>
+            <%= f.number_field :price, step: "0.01", min: 0, placeholder: "0.00", required: true, class: "w-full px-5 py-4 border-2 rounded-2xl focus:outline-none focus:ring-2 transition-all shadow-sm hover:shadow-md", style: "border-color: rgba(139, 111, 71, 0.2); color: #3D2E1F; --tw-ring-color: rgba(139, 111, 71, 0.2);" %>
+          </div>
+
+          <div class="space-y-4">
+            <%= f.label :currency, "Currency", class: "text-sm", style: "color: rgba(61, 46, 31, 0.7);" %>
+            <%= f.select :currency, Service::CURRENCIES.map { |c| ["#{c[:symbol]} #{c[:code]}", c[:code]] }, {}, class: "w-full px-5 py-4 border-2 rounded-2xl focus:outline-none focus:ring-2 transition-all shadow-sm hover:shadow-md", style: "border-color: rgba(139, 111, 71, 0.2); color: #3D2E1F; --tw-ring-color: rgba(139, 111, 71, 0.2);" %>
+          </div>
+
+          <div class="space-y-4">
+            <%= f.label :payment_type, "Payment Type", class: "text-sm", style: "color: rgba(61, 46, 31, 0.7);" %>
+            <%= f.select :payment_type, [["Per Session", "per_session"], ["Per Hour", "per_hour"], ["Per Day", "per_day"]], {}, class: "w-full px-5 py-4 border-2 rounded-2xl focus:outline-none focus:ring-2 transition-all shadow-sm hover:shadow-md", style: "border-color: rgba(139, 111, 71, 0.2); color: #3D2E1F; --tw-ring-color: rgba(139, 111, 71, 0.2);" %>
+          </div>
+        </div>
+
+        <div class="space-y-4">
+          <%= f.label :duration, "Duration", class: "text-sm", style: "color: rgba(61, 46, 31, 0.7);" %>
+          <%= f.select :duration, [["Select duration", ""]] + Service::DURATIONS.map { |d| [d, d] }, {}, class: "w-full px-5 py-4 border-2 rounded-2xl focus:outline-none focus:ring-2 transition-all shadow-sm hover:shadow-md", style: "border-color: rgba(139, 111, 71, 0.2); color: #3D2E1F; --tw-ring-color: rgba(139, 111, 71, 0.2);" %>
+        </div>
+
+        <div class="flex justify-end gap-4 pt-6">
+          <button type="button" data-action="click->service-form#toggle" class="px-8 py-4 border-2 rounded-2xl hover:shadow-md transition-all" style="border-color: rgba(139, 111, 71, 0.2); color: #3D2E1F;">
+            Cancel
+          </button>
+          <%= f.submit "Add Service", class: "px-8 py-4 text-white rounded-2xl hover:shadow-lg hover:scale-105 transition-all duration-300 cursor-pointer", style: "background-color: #8B6F47;" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+<% end %>

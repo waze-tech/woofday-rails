@@ -1,0 +1,40 @@
+<div class="space-y-10">
+  <div class="text-center max-w-xl mx-auto">
+    <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full mb-4" style="background-color: rgba(139, 111, 71, 0.1);">
+      <svg class="w-4 h-4" fill="none" stroke="#8B6F47" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/></svg>
+      <span class="text-sm" style="color: #8B6F47;">What You Offer</span>
+    </div>
+    <h1 class="mb-4" style="font-family: Georgia, serif; font-size: 2rem; color: #3D2E1F;">Your Services</h1>
+    <p class="text-lg leading-relaxed" style="color: rgba(61, 46, 31, 0.6);">
+      Add the services you offer with pricing and details. Make them shine!
+    </p>
+  </div>
+
+  <!-- Services List -->
+  <div id="services-list" class="grid md:grid-cols-2 gap-6">
+    <% @pro_profile.services.each do |service| %>
+      <%= render "pros/setups/service", service: service %>
+    <% end %>
+  </div>
+
+  <!-- Add Service Form -->
+  <div id="service-form-container">
+    <%= render "pros/setups/service_form" %>
+  </div>
+
+  <div class="flex justify-between gap-4 pt-6">
+    <%= link_to "Back", pros_setup_path, data: { turbo_method: :patch, turbo_confirm: "Go back? Your services will be saved." }, class: "px-10 py-4 border-2 rounded-2xl hover:shadow-md transition-all", style: "border-color: rgba(139, 111, 71, 0.2); color: #3D2E1F;" %>
+    
+    <% if @pro_profile.services.any? %>
+      <%= button_to "Complete Setup", complete_pros_setup_path, method: :post, class: "px-10 py-4 text-white rounded-2xl hover:shadow-xl hover:scale-105 transition-all duration-300 cursor-pointer inline-flex items-center gap-2.5", style: "background: linear-gradient(to right, #8B6F47, #c4956c);" do %>
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+        <span>Complete Setup</span>
+      <% end %>
+    <% else %>
+      <button disabled class="px-10 py-4 text-white rounded-2xl opacity-50 cursor-not-allowed inline-flex items-center gap-2.5" style="background-color: #8B6F47;">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+        <span>Add a Service First</span>
+      </button>
+    <% end %>
+  </div>
+</div>

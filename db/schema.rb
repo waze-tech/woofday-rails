@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_21_164037) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_22_173820) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -44,9 +44,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_21_164037) do
     t.text "bio"
     t.string "business_name"
     t.datetime "created_at", null: false
+    t.string "email"
     t.decimal "hourly_rate"
+    t.string "instagram"
     t.string "location"
+    t.string "phone"
     t.text "services"
+    t.boolean "setup_completed"
+    t.integer "setup_step"
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
     t.boolean "verified"
@@ -62,6 +67,19 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_21_164037) do
     t.datetime "updated_at", null: false
     t.index ["booking_id"], name: "index_reviews_on_booking_id"
     t.index ["reviewer_id"], name: "index_reviews_on_reviewer_id"
+  end
+
+  create_table "services", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "currency"
+    t.text "description"
+    t.string "duration"
+    t.string "name"
+    t.string "payment_type"
+    t.decimal "price"
+    t.bigint "pro_profile_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["pro_profile_id"], name: "index_services_on_pro_profile_id"
   end
 
   create_table "sessions", force: :cascade do |t|
@@ -90,5 +108,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_21_164037) do
   add_foreign_key "pro_profiles", "users"
   add_foreign_key "reviews", "bookings"
   add_foreign_key "reviews", "users", column: "reviewer_id"
+  add_foreign_key "services", "pro_profiles"
   add_foreign_key "sessions", "users"
 end

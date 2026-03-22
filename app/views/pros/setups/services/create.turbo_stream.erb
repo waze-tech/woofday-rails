@@ -1,0 +1,7 @@
+<%= turbo_stream.append "services-list" do %>
+  <%= render "pros/setups/service", service: @service %>
+<% end %>
+
+<%= turbo_stream.replace "new_service" do %>
+  <%= render "pros/setups/service_form" %>
+<% end %>

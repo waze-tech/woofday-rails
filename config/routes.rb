@@ -12,6 +12,14 @@ Rails.application.routes.draw do
   # Pets
   resources :pets
 
+  # Pro Setup (onboarding)
+  namespace :pros do
+    resource :setup, only: %i[ show update ] do
+      post :complete
+      resources :services, only: %i[ create destroy ], module: :setups
+    end
+  end
+
   # Pro Profiles
   resources :pro_profiles, path: "pros" do
     resources :bookings, only: [:new, :create]
