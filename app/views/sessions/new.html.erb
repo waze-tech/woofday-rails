@@ -1,44 +1,43 @@
-<div class="min-h-screen flex items-center justify-center px-4 py-12" style="background: linear-gradient(135deg, hsl(40, 33%, 98%) 0%, hsl(40, 33%, 98%) 100%);">
+<div class="min-h-screen flex items-center justify-center px-4 py-12" style="background-color: #FAF7F2;">
   <div class="w-full max-w-md space-y-8">
     <div class="text-center">
-      <div class="inline-flex h-14 w-14 items-center justify-center rounded-2xl text-white mb-4" style="background: linear-gradient(135deg, #EC4899, #06B6D4);">
-        <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 24 24">
-          <path d="M12 10c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
-        </svg>
+      <!-- Paw icon matching design system -->
+      <div class="inline-flex h-16 w-16 items-center justify-center rounded-2xl mb-4" style="background-color: #E8DFD3;">
+        <img src="https://cdn-icons-png.freepik.com/512/2013/2013058.png" class="w-8 h-8" alt="Woof.Day">
       </div>
-      <h1 class="text-2xl font-bold" style="color: hsl(20, 14%, 16%);">Welcome back!</h1>
-      <p class="mt-2" style="color: hsl(25, 10%, 45%);">Sign in to your woof.day account</p>
+      <h1 class="text-2xl font-bold" style="color: #3D2E1F;">Welcome back!</h1>
+      <p class="mt-2" style="color: rgba(61, 46, 31, 0.6);">Sign in to your woof.day account</p>
     </div>
 
     <%= form_with url: session_path, class: "mt-8 space-y-6" do |form| %>
-      <div class="rounded-xl border p-6 space-y-5" style="background-color: white; border-color: hsl(35, 20%, 88%);">
+      <div class="rounded-2xl border-2 p-6 space-y-5" style="background-color: white; border-color: rgba(139, 111, 71, 0.15);">
         <div>
-          <label class="block text-sm font-medium mb-1" style="color: hsl(25, 10%, 45%);">Email</label>
+          <label class="block text-sm font-medium mb-2" style="color: #3D2E1F;">Email</label>
           <%= form.email_field :email_address, required: true, autofocus: true, autocomplete: "email",
-              class: "w-full rounded-xl border px-4 py-3 text-sm focus:outline-none focus:ring-2",
-              style: "border-color: hsl(35, 20%, 88%); --tw-ring-color: rgba(236, 72, 153, 0.4);" %>
+              class: "w-full rounded-xl border-2 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-offset-0",
+              style: "border-color: rgba(139, 111, 71, 0.2); color: #3D2E1F; --tw-ring-color: rgba(139, 111, 71, 0.3);" %>
         </div>
 
         <div>
-          <label class="block text-sm font-medium mb-1" style="color: hsl(25, 10%, 45%);">Password</label>
+          <label class="block text-sm font-medium mb-2" style="color: #3D2E1F;">Password</label>
           <%= form.password_field :password, required: true, autocomplete: "current-password",
-              class: "w-full rounded-xl border px-4 py-3 text-sm focus:outline-none focus:ring-2",
-              style: "border-color: hsl(35, 20%, 88%); --tw-ring-color: rgba(236, 72, 153, 0.4);" %>
+              class: "w-full rounded-xl border-2 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-offset-0",
+              style: "border-color: rgba(139, 111, 71, 0.2); color: #3D2E1F; --tw-ring-color: rgba(139, 111, 71, 0.3);" %>
         </div>
 
         <div class="flex items-center justify-end">
-          <%= link_to "Forgot password?", new_password_path, class: "text-sm font-medium", style: "color: #EC4899;" %>
+          <%= link_to "Forgot password?", new_password_path, class: "text-sm font-medium hover:underline", style: "color: #8B6F47;" %>
         </div>
       </div>
 
       <div>
-        <%= form.submit "Sign in", class: "w-full rounded-xl px-8 py-3.5 text-base font-bold text-white shadow-md hover:shadow-lg transition-all cursor-pointer", style: "background-color: #EC4899; box-shadow: 0 4px 14px rgba(236, 72, 153, 0.2);" %>
+        <%= form.submit "Sign in", class: "w-full rounded-xl px-8 py-3.5 text-base font-bold text-white shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all cursor-pointer", style: "background-color: #8B6F47;" %>
       </div>
     <% end %>
 
-    <p class="text-center text-sm" style="color: hsl(25, 10%, 45%);">
+    <p class="text-center text-sm" style="color: rgba(61, 46, 31, 0.6);">
       Don't have an account?
-      <%= link_to "Sign up", sign_up_path, class: "font-medium", style: "color: #EC4899;" %>
+      <%= link_to "Sign up", sign_up_path, class: "font-semibold hover:underline", style: "color: #8B6F47;" %>
     </p>
   </div>
 </div>
