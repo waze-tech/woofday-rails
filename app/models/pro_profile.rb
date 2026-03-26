@@ -8,8 +8,8 @@ class ProProfile < ApplicationRecord
   has_many :availabilities, dependent: :destroy
   has_many :blocked_dates, dependent: :destroy
 
-  validates :business_name, presence: true, on: :update
-  validates :location, presence: true, on: :update
+  validates :business_name, presence: true, on: :update, if: :validating_profile?
+  validates :location, presence: true, on: :update, if: :validating_profile?
   validates :slug, uniqueness: true, allow_blank: true
 
   before_save :generate_slug, if: -> { slug.blank? && business_name.present? }
@@ -54,7 +54,13 @@ class ProProfile < ApplicationRecord
   end
 
   def advance_setup!
-    update!(setup_step: current_setup_step + 1)
+    # Skip validations when just advancing the step
+    update_column(:setup_step, current_setup_step + 1)
+  end
+
+  def validating_profile?
+    # Only validate business_name/location when setup is complete
+    setup_completed? || setup_step == 2
   end
 
   def complete_setup!
