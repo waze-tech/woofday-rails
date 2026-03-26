@@ -26,8 +26,11 @@ class User < ApplicationRecord
   end
 
   def display_name
-    email_address.split("@").first.titleize
+    name.presence || email_address.split("@").first.titleize
   end
+
+  # Bookings where this user is the customer
+  has_many :customer_bookings, class_name: "Booking", foreign_key: :customer_id, dependent: :destroy
 
   # OAuth support
   def self.from_omniauth(auth)

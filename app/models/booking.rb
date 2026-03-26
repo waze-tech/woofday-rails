@@ -1,12 +1,12 @@
 class Booking < ApplicationRecord
   belongs_to :pet
   belongs_to :pro_profile
+  belongs_to :customer, class_name: "User", optional: true
+  belongs_to :service, optional: true
 
   has_one :review, dependent: :destroy
-  has_one :user, through: :pet
+  has_one :pet_owner, through: :pet, source: :user
 
-  validates :start_time, presence: true
-  validates :end_time, presence: true
   validates :status, presence: true
 
   # State as records pattern (37signals style)
@@ -16,8 +16,11 @@ class Booking < ApplicationRecord
     confirmed: "confirmed",
     in_progress: "in_progress",
     completed: "completed",
-    cancelled: "cancelled"
+    cancelled: "cancelled",
+    declined: "declined"
   }, default: :pending
+
+  before_validation :set_customer_from_pet, on: :create
 
   scope :upcoming, -> { where("start_time > ?", Time.current).order(:start_time) }
   scope :past, -> { where("end_time < ?", Time.current).order(end_time: :desc) }
@@ -37,5 +40,15 @@ class Booking < ApplicationRecord
 
   def cancel!
     update!(status: :cancelled)
+  end
+
+  def decline!(reason = nil)
+    update!(status: :declined)
+  end
+
+  private
+
+  def set_customer_from_pet
+    self.customer ||= pet&.user
   end
 end

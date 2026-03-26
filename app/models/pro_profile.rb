@@ -7,10 +7,34 @@ class ProProfile < ApplicationRecord
 
   validates :business_name, presence: true, on: :update
   validates :location, presence: true, on: :update
+  validates :slug, uniqueness: true, allow_blank: true
 
-  scope :verified, -> { where(verified: true) }
+  before_save :generate_slug, if: -> { slug.blank? && business_name.present? }
+
+  # Subscription tiers
+  enum :subscription_tier, { free: "free", pro: "pro" }, default: :free, prefix: :tier
+
+  scope :verified, -> { where(is_verified: true) }
   scope :setup_complete, -> { where(setup_completed: true) }
   scope :by_location, ->(loc) { where("location ILIKE ?", "%#{loc}%") }
+  scope :pro_tier, -> { where(subscription_tier: "pro") }
+
+  def generate_slug
+    base_slug = business_name.parameterize
+    slug_candidate = base_slug
+    counter = 1
+
+    while ProProfile.where(slug: slug_candidate).where.not(id: id).exists?
+      slug_candidate = "#{base_slug}-#{counter}"
+      counter += 1
+    end
+
+    self.slug = slug_candidate
+  end
+
+  def pro_subscription?
+    tier_pro? && (subscription_expires_at.nil? || subscription_expires_at > Time.current)
+  end
 
   SETUP_STEPS = {
     instagram: 1,
