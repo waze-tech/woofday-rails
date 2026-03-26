@@ -34,6 +34,9 @@ Rails.application.routes.draw do
     resources :bookings, only: [:new, :create]
   end
 
+  # Slug-based pro profile URLs (must be after resources)
+  get "/pro/:slug", to: "pro_profiles#show_by_slug", as: :pro_by_slug
+
   # Bookings
   resources :bookings, only: [:index, :show, :update] do
     resource :review, only: [:new, :create]

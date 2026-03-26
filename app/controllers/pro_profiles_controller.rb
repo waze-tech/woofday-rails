@@ -8,7 +8,17 @@ class ProProfilesController < ApplicationController
   end
 
   def show
-    @reviews = @pro_profile.reviews.recent.includes(:reviewer).limit(10)
+    @reviews = @pro_profile.reviews.published.recent.includes(:reviewer).limit(10)
+    @services = @pro_profile.services.where("name IS NOT NULL")
+    @photos = @pro_profile.portfolio_photos.ordered.limit(6)
+  end
+
+  def show_by_slug
+    @pro_profile = ProProfile.find_by!(slug: params[:slug])
+    @reviews = @pro_profile.reviews.published.recent.includes(:reviewer).limit(10)
+    @services = @pro_profile.services.where("name IS NOT NULL")
+    @photos = @pro_profile.portfolio_photos.ordered.limit(6)
+    render :show
   end
 
   def new
