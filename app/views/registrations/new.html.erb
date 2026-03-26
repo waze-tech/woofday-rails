@@ -24,7 +24,7 @@
       </p>
     </div>
 
-    <%= form_with model: @user, url: registrations_path, data: { controller: "signup", signup_target: "form" } do |form| %>
+    <%= form_with model: @user, url: registrations_path, data: { controller: "signup", signup_target: "form", signup_preset_role_value: @preset_role, signup_preset_plan_value: @plan } do |form| %>
       <% if @user.errors.any? %>
         <div class="rounded-xl border-2 p-4 mb-8" style="background-color: rgba(239, 68, 68, 0.1); border-color: rgba(239, 68, 68, 0.2);">
           <% @user.errors.full_messages.each do |message| %>

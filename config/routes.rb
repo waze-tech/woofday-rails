@@ -33,6 +33,9 @@ Rails.application.routes.draw do
   # Search
   get "/search", to: "search#index", as: :search
 
+  # Pricing (Become a Pro)
+  get "/pricing", to: "pricing#index", as: :pricing
+
   # Dashboard
   get "/dashboard", to: "dashboard#show", as: :dashboard
 

@@ -1,0 +1,173 @@
+<section class="py-16 px-6">
+  <div class="max-w-5xl mx-auto">
+    <!-- Header -->
+    <div class="text-center mb-12">
+      <h1 class="text-4xl md:text-5xl mb-4 font-serif" style="font-weight: 700; color: #3D2E1F;">
+        Become a Pro
+      </h1>
+      <p class="text-lg max-w-2xl mx-auto" style="color: rgba(61, 46, 31, 0.6);">
+        Join thousands of pet care professionals and grow your business with woof.day
+      </p>
+    </div>
+
+    <!-- Pricing Cards -->
+    <div class="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+      <!-- Free Tier -->
+      <div class="border-2 rounded-3xl p-8 transition-all hover:shadow-lg" style="background-color: #FFFFFF; border-color: rgba(139, 111, 71, 0.15);">
+        <div class="mb-6">
+          <h2 class="text-2xl mb-2" style="font-weight: 700; color: #3D2E1F;">Free</h2>
+          <div class="flex items-baseline gap-1">
+            <span class="text-4xl font-serif" style="font-weight: 700; color: #8B6F47;">€0</span>
+            <span style="color: rgba(61, 46, 31, 0.5);">/month</span>
+          </div>
+          <p class="mt-2 text-sm" style="color: rgba(61, 46, 31, 0.6);">Perfect for getting started</p>
+        </div>
+
+        <ul class="space-y-3 mb-8">
+          <li class="flex items-start gap-3">
+            <svg class="w-5 h-5 flex-shrink-0 mt-0.5" fill="#8B6F47" viewBox="0 0 24 24">
+              <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+            </svg>
+            <span style="color: rgba(61, 46, 31, 0.8);">Profile with contact info</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <svg class="w-5 h-5 flex-shrink-0 mt-0.5" fill="#8B6F47" viewBox="0 0 24 24">
+              <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+            </svg>
+            <span style="color: rgba(61, 46, 31, 0.8);">1 service listed</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <svg class="w-5 h-5 flex-shrink-0 mt-0.5" fill="#8B6F47" viewBox="0 0 24 24">
+              <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+            </svg>
+            <span style="color: rgba(61, 46, 31, 0.8);">Listed in directory</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <svg class="w-5 h-5 flex-shrink-0 mt-0.5" fill="#8B6F47" viewBox="0 0 24 24">
+              <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+            </svg>
+            <span style="color: rgba(61, 46, 31, 0.8);">Basic analytics</span>
+          </li>
+        </ul>
+
+        <%= link_to sign_up_path(role: "pro", plan: "free"), class: "block w-full text-center px-6 py-3 rounded-2xl border-2 transition-all", style: "border-color: #8B6F47; color: #8B6F47; background-color: transparent;" do %>
+          Get Started Free
+        <% end %>
+      </div>
+
+      <!-- Pro Tier -->
+      <div class="border-2 rounded-3xl p-8 relative transition-all hover:shadow-lg" style="background-color: #FAF7F2; border-color: #8B6F47;">
+        <!-- Popular Badge -->
+        <div class="absolute -top-3 left-1/2 transform -translate-x-1/2">
+          <span class="px-4 py-1 rounded-full text-sm" style="background-color: #8B6F47; color: #FAF7F2;">
+            Most Popular
+          </span>
+        </div>
+
+        <div class="mb-6">
+          <h2 class="text-2xl mb-2" style="font-weight: 700; color: #3D2E1F;">Pro</h2>
+          <div class="flex items-baseline gap-1">
+            <span class="text-4xl font-serif" style="font-weight: 700; color: #8B6F47;">€19</span>
+            <span style="color: rgba(61, 46, 31, 0.5);">/month</span>
+          </div>
+          <p class="mt-2 text-sm" style="color: rgba(61, 46, 31, 0.6);">Everything you need to grow</p>
+        </div>
+
+        <ul class="space-y-3 mb-8">
+          <li class="flex items-start gap-3">
+            <svg class="w-5 h-5 flex-shrink-0 mt-0.5" fill="#8B6F47" viewBox="0 0 24 24">
+              <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+            </svg>
+            <span style="color: rgba(61, 46, 31, 0.8);"><strong>Everything in Free</strong></span>
+          </li>
+          <li class="flex items-start gap-3">
+            <svg class="w-5 h-5 flex-shrink-0 mt-0.5" fill="#8B6F47" viewBox="0 0 24 24">
+              <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+            </svg>
+            <span style="color: rgba(61, 46, 31, 0.8);">Unlimited services</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <svg class="w-5 h-5 flex-shrink-0 mt-0.5" fill="#8B6F47" viewBox="0 0 24 24">
+              <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+            </svg>
+            <span style="color: rgba(61, 46, 31, 0.8);">Online booking system</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <svg class="w-5 h-5 flex-shrink-0 mt-0.5" fill="#8B6F47" viewBox="0 0 24 24">
+              <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+            </svg>
+            <span style="color: rgba(61, 46, 31, 0.8);">Calendar integration</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <svg class="w-5 h-5 flex-shrink-0 mt-0.5" fill="#8B6F47" viewBox="0 0 24 24">
+              <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+            </svg>
+            <span style="color: rgba(61, 46, 31, 0.8);">Verified reviews</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <svg class="w-5 h-5 flex-shrink-0 mt-0.5" fill="#8B6F47" viewBox="0 0 24 24">
+              <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+            </svg>
+            <span style="color: rgba(61, 46, 31, 0.8);">Social sharing tools</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <svg class="w-5 h-5 flex-shrink-0 mt-0.5" fill="#8B6F47" viewBox="0 0 24 24">
+              <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+            </svg>
+            <span style="color: rgba(61, 46, 31, 0.8);">Priority support</span>
+          </li>
+        </ul>
+
+        <%= link_to sign_up_path(role: "pro", plan: "pro"), class: "block w-full text-center px-6 py-3 rounded-2xl shadow-sm transition-all", style: "background-color: #8B6F47; color: #FAF7F2;" do %>
+          Start Pro Trial
+        <% end %>
+        <p class="text-center text-sm mt-3" style="color: rgba(61, 46, 31, 0.5);">14-day free trial • Cancel anytime</p>
+      </div>
+    </div>
+
+    <!-- Founding Pro Offer -->
+    <div class="mt-12 max-w-2xl mx-auto">
+      <div class="rounded-2xl p-6 text-center" style="background-color: rgba(198, 168, 118, 0.2); border: 1px dashed #C6A876;">
+        <div class="inline-flex items-center gap-2 mb-2">
+          <svg class="w-5 h-5" fill="#8B6F47" viewBox="0 0 24 24">
+            <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+          </svg>
+          <span class="font-semibold" style="color: #8B6F47;">Founding Pro Offer</span>
+        </div>
+        <p style="color: rgba(61, 46, 31, 0.7);">
+          Be one of our first 10 founding pros and get <strong>6 months free</strong> on the Pro plan!
+        </p>
+      </div>
+    </div>
+
+    <!-- FAQ Section -->
+    <div class="mt-16 max-w-2xl mx-auto">
+      <h2 class="text-2xl mb-6 text-center font-serif" style="font-weight: 700; color: #3D2E1F;">
+        Common Questions
+      </h2>
+
+      <div class="space-y-4">
+        <div class="border rounded-2xl p-5" style="background-color: #FFFFFF; border-color: rgba(139, 111, 71, 0.15);">
+          <h3 class="font-semibold mb-2" style="color: #3D2E1F;">Can I upgrade later?</h3>
+          <p class="text-sm" style="color: rgba(61, 46, 31, 0.6);">
+            Yes! Start with Free and upgrade to Pro anytime. Your profile and reviews carry over.
+          </p>
+        </div>
+
+        <div class="border rounded-2xl p-5" style="background-color: #FFFFFF; border-color: rgba(139, 111, 71, 0.15);">
+          <h3 class="font-semibold mb-2" style="color: #3D2E1F;">What payment methods do you accept?</h3>
+          <p class="text-sm" style="color: rgba(61, 46, 31, 0.6);">
+            We accept all major credit/debit cards through Stripe. Payments are secure and encrypted.
+          </p>
+        </div>
+
+        <div class="border rounded-2xl p-5" style="background-color: #FFFFFF; border-color: rgba(139, 111, 71, 0.15);">
+          <h3 class="font-semibold mb-2" style="color: #3D2E1F;">Is there a contract?</h3>
+          <p class="text-sm" style="color: rgba(61, 46, 31, 0.6);">
+            No contracts! Pro is billed monthly and you can cancel anytime with no penalties.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

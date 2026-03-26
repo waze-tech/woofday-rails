@@ -28,7 +28,7 @@
           <nav class="hidden md:flex items-center gap-6">
             <%= link_to "Services", search_path, class: "transition-colors", style: "color: rgba(61, 46, 31, 0.7);" %>
             <%= link_to "How it works", "#how-it-works", class: "transition-colors", style: "color: rgba(61, 46, 31, 0.7);" %>
-            <%= link_to "Become a Pro", new_pro_profile_path, class: "transition-colors", style: "color: rgba(61, 46, 31, 0.7);" %>
+            <%= link_to "For Pros", pricing_path, class: "transition-colors", style: "color: rgba(61, 46, 31, 0.7);" %>
 
             <% if authenticated? %>
               <%= link_to dashboard_path, class: "px-6 py-2.5 rounded-2xl shadow-sm transition-all", style: "background-color: #8B6F47; color: #FAF7F2;" do %>
@@ -36,7 +36,7 @@
               <% end %>
             <% else %>
               <%= link_to new_session_path, class: "px-6 py-2.5 rounded-2xl shadow-sm transition-all", style: "background-color: #8B6F47; color: #FAF7F2;" do %>
-                Get Started
+                Log In
               <% end %>
             <% end %>
           </nav>

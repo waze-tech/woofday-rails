@@ -3,6 +3,8 @@ class RegistrationsController < ApplicationController
 
   def new
     @user = User.new
+    @preset_role = params[:role]
+    @plan = params[:plan]
   end
 
   def create
