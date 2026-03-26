@@ -12,6 +12,8 @@ class BookingsController < ApplicationController
   def new
     @pro_profile = ProProfile.find(params[:pro_profile_id])
     @pets = Current.user.pets
+    @services = @pro_profile.services.where("name IS NOT NULL")
+    @availabilities = @pro_profile.availabilities.ordered
     @booking = Booking.new(pro_profile: @pro_profile)
   end
 
@@ -32,13 +34,20 @@ class BookingsController < ApplicationController
     case params[:status]
     when "confirm"
       @booking.confirm!
+      # TODO: Send confirmation email
       notice = "Booking confirmed."
     when "complete"
       @booking.complete!
+      # TODO: Send review request email
       notice = "Booking marked complete."
     when "cancel"
       @booking.cancel!
+      # TODO: Send cancellation email
       notice = "Booking cancelled."
+    when "decline"
+      @booking.decline!
+      # TODO: Send decline email
+      notice = "Booking declined."
     end
 
     redirect_to dashboard_path, notice: notice
@@ -51,6 +60,6 @@ class BookingsController < ApplicationController
   end
 
   def booking_params
-    params.require(:booking).permit(:pet_id, :start_time, :end_time, :notes, :total_price)
+    params.require(:booking).permit(:pet_id, :service_id, :start_time, :end_time, :notes, :total_price)
   end
 end

@@ -1,0 +1,19 @@
+<h1>How was your visit? 🐕</h1>
+
+<p>Hi <%= @customer.display_name %>,</p>
+
+<p>We hope <%= @pet&.name %>'s appointment with <strong><%= @pro.business_name %></strong> went well!</p>
+
+<p>Would you mind leaving a review? It only takes a minute and helps other pet owners find great care.</p>
+
+<p>
+  <a href="<%= new_booking_review_url(@booking) %>" style="background-color: #8B6F47; color: white; padding: 12px 24px; text-decoration: none; border-radius: 8px;">
+    Leave a Review
+  </a>
+</p>
+
+<p>Your feedback means the world to small businesses like <%= @pro.business_name %>.</p>
+
+<p>Thanks for being part of woof.day!</p>
+
+<p>— The woof.day team</p>
