@@ -10,9 +10,28 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_26_195314) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_26_195606) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+
+  create_table "availabilities", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.integer "day_of_week", null: false
+    t.time "end_time", null: false
+    t.bigint "pro_profile_id", null: false
+    t.time "start_time", null: false
+    t.datetime "updated_at", null: false
+    t.index ["pro_profile_id"], name: "index_availabilities_on_pro_profile_id"
+  end
+
+  create_table "blocked_dates", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.date "date", null: false
+    t.bigint "pro_profile_id", null: false
+    t.text "reason"
+    t.datetime "updated_at", null: false
+    t.index ["pro_profile_id"], name: "index_blocked_dates_on_pro_profile_id"
+  end
 
   create_table "bookings", force: :cascade do |t|
     t.datetime "created_at", null: false
@@ -44,6 +63,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_26_195314) do
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
     t.index ["user_id"], name: "index_pets_on_user_id"
+  end
+
+  create_table "portfolio_photos", force: :cascade do |t|
+    t.text "caption"
+    t.datetime "created_at", null: false
+    t.bigint "pro_profile_id", null: false
+    t.integer "sort_order", default: 0
+    t.datetime "updated_at", null: false
+    t.string "url", null: false
+    t.index ["pro_profile_id"], name: "index_portfolio_photos_on_pro_profile_id"
   end
 
   create_table "pro_profiles", force: :cascade do |t|
@@ -123,11 +152,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_26_195314) do
     t.index ["email_address"], name: "index_users_on_email_address", unique: true
   end
 
+  add_foreign_key "availabilities", "pro_profiles"
+  add_foreign_key "blocked_dates", "pro_profiles"
   add_foreign_key "bookings", "pets"
   add_foreign_key "bookings", "pro_profiles"
   add_foreign_key "bookings", "services"
   add_foreign_key "bookings", "users", column: "customer_id"
   add_foreign_key "pets", "users"
+  add_foreign_key "portfolio_photos", "pro_profiles"
   add_foreign_key "pro_profiles", "users"
   add_foreign_key "reviews", "bookings"
   add_foreign_key "reviews", "users", column: "reviewer_id"

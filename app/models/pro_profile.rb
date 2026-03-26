@@ -4,6 +4,9 @@ class ProProfile < ApplicationRecord
   has_many :services, dependent: :destroy
   has_many :bookings, dependent: :destroy
   has_many :reviews, through: :bookings
+  has_many :portfolio_photos, dependent: :destroy
+  has_many :availabilities, dependent: :destroy
+  has_many :blocked_dates, dependent: :destroy
 
   validates :business_name, presence: true, on: :update
   validates :location, presence: true, on: :update
@@ -64,5 +67,27 @@ class ProProfile < ApplicationRecord
 
   def total_reviews
     reviews.count
+  end
+
+  # Check if pro is available on a specific date/time
+  def available_on?(datetime)
+    return false if BlockedDate.blocked?(self, datetime.to_date)
+    
+    day_availability = availabilities.for_day(datetime.wday)
+    return false if day_availability.empty?
+    
+    day_availability.any? { |slot| slot.covers?(datetime) }
+  end
+
+  # Get available time slots for a date
+  def available_slots_for(date)
+    return [] if BlockedDate.blocked?(self, date)
+    
+    availabilities.for_day(date.wday).ordered
+  end
+
+  # Check if pro has any availability set
+  def has_availability?
+    availabilities.any?
   end
 end

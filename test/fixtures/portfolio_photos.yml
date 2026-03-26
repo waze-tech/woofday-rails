@@ -1,0 +1,13 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  pro_profile: one
+  url: MyString
+  caption: MyText
+  sort_order: 1
+
+two:
+  pro_profile: two
+  url: MyString
+  caption: MyText
+  sort_order: 1

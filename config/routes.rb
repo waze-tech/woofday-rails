@@ -18,6 +18,15 @@ Rails.application.routes.draw do
       post :complete
       resources :services, only: %i[ create destroy ], module: :setups
     end
+    
+    # Pro Dashboard sections
+    resources :portfolio_photos, only: %i[ index create destroy ] do
+      collection do
+        patch :reorder
+      end
+    end
+    resources :availabilities, only: %i[ index create update destroy ]
+    resources :blocked_dates, only: %i[ index create destroy ]
   end
 
   # Pro Profiles

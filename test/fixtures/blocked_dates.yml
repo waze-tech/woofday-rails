@@ -1,0 +1,11 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  pro_profile: one
+  date: 2026-03-26
+  reason: MyText
+
+two:
+  pro_profile: two
+  date: 2026-03-26
+  reason: MyText

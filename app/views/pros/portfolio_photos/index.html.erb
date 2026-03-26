@@ -1,0 +1,58 @@
+<div class="max-w-4xl mx-auto px-6 py-8">
+  <div class="mb-8">
+    <h1 class="text-3xl font-serif mb-2" style="font-weight: 700; color: #3D2E1F;">Portfolio</h1>
+    <p style="color: rgba(61, 46, 31, 0.6);">Showcase your best work to attract new clients</p>
+  </div>
+
+  <!-- Add Photo Form -->
+  <div class="border-2 rounded-2xl p-6 mb-8" style="background-color: #FFFFFF; border-color: rgba(139, 111, 71, 0.15);">
+    <h2 class="text-lg font-semibold mb-4" style="color: #3D2E1F;">Add Photo</h2>
+    <%= form_with model: PortfolioPhoto.new, url: pros_portfolio_photos_path, class: "space-y-4" do |f| %>
+      <div>
+        <%= f.label :url, "Image URL", class: "block text-sm font-medium mb-1", style: "color: #3D2E1F;" %>
+        <%= f.url_field :url, required: true, placeholder: "https://example.com/photo.jpg", class: "w-full h-12 px-4 border-2 rounded-xl focus:outline-none focus:ring-2", style: "border-color: rgba(139, 111, 71, 0.2); color: #3D2E1F;" %>
+      </div>
+      <div>
+        <%= f.label :caption, "Caption (optional)", class: "block text-sm font-medium mb-1", style: "color: #3D2E1F;" %>
+        <%= f.text_field :caption, placeholder: "Describe this photo...", class: "w-full h-12 px-4 border-2 rounded-xl focus:outline-none focus:ring-2", style: "border-color: rgba(139, 111, 71, 0.2); color: #3D2E1F;" %>
+      </div>
+      <%= f.submit "Add Photo", class: "px-6 py-3 rounded-xl font-semibold cursor-pointer", style: "background-color: #8B6F47; color: #FAF7F2;" %>
+    <% end %>
+  </div>
+
+  <!-- Photo Grid -->
+  <% if @photos.any? %>
+    <div class="grid grid-cols-2 md:grid-cols-3 gap-4" id="portfolio-grid">
+      <% @photos.each do |photo| %>
+        <div class="relative group rounded-xl overflow-hidden aspect-square" style="background-color: #E8DFD3;">
+          <img src="<%= photo.url %>" alt="<%= photo.caption %>" class="w-full h-full object-cover">
+          <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+            <%= button_to pros_portfolio_photo_path(photo), method: :delete, data: { turbo_confirm: "Remove this photo?" }, class: "p-2 bg-red-500 text-white rounded-lg" do %>
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+              </svg>
+            <% end %>
+          </div>
+          <% if photo.caption.present? %>
+            <div class="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/70 to-transparent">
+              <p class="text-white text-sm"><%= photo.caption %></p>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <div class="text-center py-12 border-2 border-dashed rounded-2xl" style="border-color: rgba(139, 111, 71, 0.3);">
+      <svg class="w-12 h-12 mx-auto mb-4" fill="none" stroke="rgba(139, 111, 71, 0.4)" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+      </svg>
+      <p class="text-lg mb-2" style="color: rgba(61, 46, 31, 0.6);">No photos yet</p>
+      <p class="text-sm" style="color: rgba(61, 46, 31, 0.4);">Add photos of your best work to attract clients</p>
+    </div>
+  <% end %>
+
+  <!-- Back to Dashboard -->
+  <div class="mt-8 pt-8 border-t" style="border-color: rgba(139, 111, 71, 0.15);">
+    <%= link_to "← Back to Dashboard", dashboard_path, style: "color: #8B6F47;" %>
+  </div>
+</div>
