@@ -4,6 +4,11 @@ class Pros::SetupsController < ApplicationController
 
   def show
     @step = @pro_profile.current_setup_step
+    
+    # Handle return from Stripe checkout
+    if params[:subscription] == "success"
+      flash.now[:notice] = "🎉 Payment successful! Now let's set up your profile."
+    end
   end
 
   def update
@@ -19,14 +24,7 @@ class Pros::SetupsController < ApplicationController
 
   def complete
     @pro_profile.complete_setup!
-    
-    # If user selected Pro plan during signup, redirect to Stripe checkout
-    if session[:selected_plan] == "pro"
-      session.delete(:selected_plan)
-      redirect_to_stripe_checkout
-    else
-      redirect_to dashboard_path, notice: "Welcome to woof.day! Your profile is now live."
-    end
+    redirect_to dashboard_path, notice: "Welcome to woof.day! Your profile is now live."
   end
 
   private
@@ -58,28 +56,7 @@ class Pros::SetupsController < ApplicationController
     def update_services_step
       # Services are added via Pros::Setups::ServicesController
       @pro_profile.complete_setup!
-      
-      # If user selected Pro plan during signup, redirect to Stripe checkout
-      if session[:selected_plan] == "pro"
-        session.delete(:selected_plan)
-        redirect_to_stripe_checkout
-      else
-        redirect_to dashboard_path, notice: "Your profile is live!"
-      end
-    end
-    
-    def redirect_to_stripe_checkout
-      service = StripeCheckoutService.new(@pro_profile)
-      
-      checkout_session = service.create_subscription_checkout(
-        success_url: dashboard_url(subscription: "success"),
-        cancel_url: dashboard_url
-      )
-      
-      redirect_to checkout_session.url, allow_other_host: true
-    rescue Stripe::StripeError => e
-      Rails.logger.error "Stripe checkout error: #{e.message}"
-      redirect_to dashboard_path, notice: "Your profile is live! You can upgrade to Pro anytime from your dashboard."
+      redirect_to dashboard_path, notice: "Your profile is live!"
     end
 
     def profile_params

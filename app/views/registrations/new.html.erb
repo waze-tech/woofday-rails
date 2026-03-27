@@ -82,26 +82,52 @@
         </div>
 
         <!-- Form Fields -->
-        <div class="rounded-2xl border-2 p-8 space-y-6" style="background-color: white; border-color: rgba(139, 111, 71, 0.15);">
-          <div class="space-y-2">
-            <%= form.label :email_address, "Email address", class: "text-sm font-medium", style: "color: #3D2E1F;" %>
-            <%= form.email_field :email_address, required: true, autocomplete: "email", placeholder: "you@example.com", class: "w-full h-12 px-4 border-2 rounded-xl focus:outline-none focus:ring-2", style: "border-color: rgba(139, 111, 71, 0.2); color: #3D2E1F; --tw-ring-color: rgba(139, 111, 71, 0.3);" %>
+        <div data-controller="form-validation">
+          <div class="rounded-2xl border-2 p-8 space-y-6" style="background-color: white; border-color: rgba(139, 111, 71, 0.15);">
+            <div class="space-y-2">
+              <%= form.label :email_address, "Email address", class: "text-sm font-medium", style: "color: #3D2E1F;" %>
+              <%= form.email_field :email_address, 
+                  required: true, 
+                  autocomplete: "email", 
+                  placeholder: "you@example.com", 
+                  class: "w-full h-12 px-4 border-2 rounded-xl focus:outline-none focus:ring-2", 
+                  style: "border-color: rgba(139, 111, 71, 0.2); color: #3D2E1F; --tw-ring-color: rgba(139, 111, 71, 0.3);",
+                  data: { form_validation_target: "email", action: "input->form-validation#validateEmail" } %>
+              <div data-form-validation-target="emailStatus" class="validation-status mt-1 h-5"></div>
+            </div>
+
+            <div class="space-y-2">
+              <%= form.label :password, "Password", class: "text-sm font-medium", style: "color: #3D2E1F;" %>
+              <%= form.password_field :password, 
+                  required: true, 
+                  autocomplete: "new-password", 
+                  placeholder: "At least 8 characters", 
+                  class: "w-full h-12 px-4 border-2 rounded-xl focus:outline-none focus:ring-2", 
+                  style: "border-color: rgba(139, 111, 71, 0.2); color: #3D2E1F; --tw-ring-color: rgba(139, 111, 71, 0.3);",
+                  data: { form_validation_target: "password", action: "input->form-validation#validatePassword" } %>
+              <div data-form-validation-target="passwordStatus" class="validation-status mt-1 h-5"></div>
+            </div>
+
+            <div class="space-y-2">
+              <%= form.label :password_confirmation, "Confirm password", class: "text-sm font-medium", style: "color: #3D2E1F;" %>
+              <%= form.password_field :password_confirmation, 
+                  required: true, 
+                  autocomplete: "new-password", 
+                  placeholder: "Re-enter your password", 
+                  class: "w-full h-12 px-4 border-2 rounded-xl focus:outline-none focus:ring-2", 
+                  style: "border-color: rgba(139, 111, 71, 0.2); color: #3D2E1F; --tw-ring-color: rgba(139, 111, 71, 0.3);",
+                  data: { form_validation_target: "passwordConfirmation", action: "input->form-validation#validateConfirmation" } %>
+              <div data-form-validation-target="confirmationStatus" class="validation-status mt-1 h-5"></div>
+            </div>
           </div>
 
-          <div class="space-y-2">
-            <%= form.label :password, "Password", class: "text-sm font-medium", style: "color: #3D2E1F;" %>
-            <%= form.password_field :password, required: true, autocomplete: "new-password", placeholder: "At least 8 characters", class: "w-full h-12 px-4 border-2 rounded-xl focus:outline-none focus:ring-2", style: "border-color: rgba(139, 111, 71, 0.2); color: #3D2E1F; --tw-ring-color: rgba(139, 111, 71, 0.3);" %>
-            <p class="text-xs" style="color: rgba(61, 46, 31, 0.5);">Must be at least 8 characters long</p>
+          <div class="pt-6">
+            <%= form.submit "Create Account", 
+                class: "w-full h-12 text-white rounded-xl font-bold hover:shadow-lg hover:-translate-y-0.5 transition-all", 
+                style: "background-color: #8B6F47; opacity: 0.5; cursor: not-allowed;",
+                disabled: true,
+                data: { form_validation_target: "submit" } %>
           </div>
-
-          <div class="space-y-2">
-            <%= form.label :password_confirmation, "Confirm password", class: "text-sm font-medium", style: "color: #3D2E1F;" %>
-            <%= form.password_field :password_confirmation, required: true, autocomplete: "new-password", placeholder: "Re-enter your password", class: "w-full h-12 px-4 border-2 rounded-xl focus:outline-none focus:ring-2", style: "border-color: rgba(139, 111, 71, 0.2); color: #3D2E1F; --tw-ring-color: rgba(139, 111, 71, 0.3);" %>
-          </div>
-        </div>
-
-        <div class="pt-6">
-          <%= form.submit "Create Account", class: "w-full h-12 text-white rounded-xl font-bold hover:shadow-lg hover:-translate-y-0.5 transition-all cursor-pointer", style: "background-color: #8B6F47;" %>
         </div>
 
         <p class="text-xs text-center pt-4" style="color: rgba(61, 46, 31, 0.6);">

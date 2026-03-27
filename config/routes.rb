@@ -4,6 +4,12 @@ Rails.application.routes.draw do
   resources :passwords, param: :token
   post "/registrations", to: "registrations#create"
   get "/sign_up", to: "registrations#new", as: :sign_up
+  get "/checkout/redirect", to: "stripe_redirects#show", as: :stripe_redirect
+  
+  # API
+  namespace :api do
+    get "check_email", to: "validations#check_email"
+  end
 
   # OAuth
   get "/auth/:provider/callback", to: "omniauth_callbacks#google_oauth2"
