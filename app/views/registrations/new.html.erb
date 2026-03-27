@@ -25,6 +25,8 @@
     </div>
 
     <%= form_with model: @user, url: registrations_path, data: { controller: "signup", signup_target: "form", signup_preset_role_value: @preset_role, signup_preset_plan_value: @plan } do |form| %>
+      <!-- Hidden field for plan -->
+      <%= hidden_field_tag :plan, @plan, data: { signup_target: "planInput" } %>
       <% if @user.errors.any? %>
         <div class="rounded-xl border-2 p-4 mb-8" style="background-color: rgba(239, 68, 68, 0.1); border-color: rgba(239, 68, 68, 0.2);">
           <% @user.errors.full_messages.each do |message| %>

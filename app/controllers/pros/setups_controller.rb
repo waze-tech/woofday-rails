@@ -19,7 +19,14 @@ class Pros::SetupsController < ApplicationController
 
   def complete
     @pro_profile.complete_setup!
-    redirect_to dashboard_path, notice: "Welcome to woof.day! Your profile is now live."
+    
+    # If user selected Pro plan during signup, redirect to Stripe checkout
+    if session[:selected_plan] == "pro"
+      session.delete(:selected_plan)
+      redirect_to_stripe_checkout
+    else
+      redirect_to dashboard_path, notice: "Welcome to woof.day! Your profile is now live."
+    end
   end
 
   private
@@ -51,7 +58,28 @@ class Pros::SetupsController < ApplicationController
     def update_services_step
       # Services are added via Pros::Setups::ServicesController
       @pro_profile.complete_setup!
-      redirect_to dashboard_path, notice: "Your profile is live!"
+      
+      # If user selected Pro plan during signup, redirect to Stripe checkout
+      if session[:selected_plan] == "pro"
+        session.delete(:selected_plan)
+        redirect_to_stripe_checkout
+      else
+        redirect_to dashboard_path, notice: "Your profile is live!"
+      end
+    end
+    
+    def redirect_to_stripe_checkout
+      service = StripeCheckoutService.new(@pro_profile)
+      
+      checkout_session = service.create_subscription_checkout(
+        success_url: dashboard_url(subscription: "success"),
+        cancel_url: dashboard_url
+      )
+      
+      redirect_to checkout_session.url, allow_other_host: true
+    rescue Stripe::StripeError => e
+      Rails.logger.error "Stripe checkout error: #{e.message}"
+      redirect_to dashboard_path, notice: "Your profile is live! You can upgrade to Pro anytime from your dashboard."
     end
 
     def profile_params

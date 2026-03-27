@@ -8,6 +8,11 @@ class DashboardController < ApplicationController
     if @user.pro?
       @pro_profile = @user.pro_profile
       @pro_bookings = @pro_profile&.bookings&.upcoming&.includes(:pet)&.limit(10)
+      
+      # Handle Stripe subscription success redirect
+      if params[:subscription] == "success"
+        flash.now[:notice] = "🎉 Welcome to Pro! Your subscription is now active."
+      end
     end
   end
 end

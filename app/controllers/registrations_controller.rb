@@ -9,9 +9,16 @@ class RegistrationsController < ApplicationController
 
   def create
     @user = User.new(user_params)
+    @plan = params[:plan]
 
     if @user.save
       start_new_session_for(@user)
+      
+      # Store the selected plan for after setup completion
+      if @user.pro? && @plan == "pro"
+        session[:selected_plan] = "pro"
+      end
+      
       redirect_after_signup
     else
       render :new, status: :unprocessable_entity
