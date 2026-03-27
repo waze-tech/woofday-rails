@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_26_195606) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_27_084548) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -92,12 +92,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_26_195606) do
     t.boolean "setup_completed"
     t.integer "setup_step"
     t.string "slug"
+    t.string "stripe_customer_id"
+    t.string "stripe_subscription_id"
     t.datetime "subscription_expires_at"
     t.string "subscription_tier", default: "free"
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
     t.boolean "verified"
     t.index ["slug"], name: "index_pro_profiles_on_slug", unique: true
+    t.index ["stripe_customer_id"], name: "index_pro_profiles_on_stripe_customer_id", unique: true, where: "(stripe_customer_id IS NOT NULL)"
+    t.index ["stripe_subscription_id"], name: "index_pro_profiles_on_stripe_subscription_id", unique: true, where: "(stripe_subscription_id IS NOT NULL)"
     t.index ["user_id"], name: "index_pro_profiles_on_user_id"
   end
 

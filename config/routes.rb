@@ -12,11 +12,21 @@ Rails.application.routes.draw do
   # Pets
   resources :pets
 
+  # Webhooks (must be before authentication)
+  namespace :webhooks do
+    post "stripe", to: "stripe#create"
+  end
+
   # Pro Setup (onboarding)
   namespace :pros do
     resource :setup, only: %i[ show update ] do
       post :complete
       resources :services, only: %i[ create destroy ], module: :setups
+    end
+    
+    # Subscription management
+    resource :subscription, only: %i[ show create ] do
+      post :portal
     end
     
     # Pro Dashboard sections

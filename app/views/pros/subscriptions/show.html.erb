@@ -1,0 +1,119 @@
+<div class="max-w-2xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
+  <% if params[:success] %>
+    <div class="mb-6 rounded-xl border p-4" style="background-color: rgba(16, 185, 129, 0.1); border-color: rgba(16, 185, 129, 0.2);">
+      <p class="font-medium" style="color: rgb(16, 185, 129);">🎉 Welcome to Pro! Your subscription is now active.</p>
+    </div>
+  <% end %>
+
+  <h1 class="text-2xl font-bold mb-6" style="color: hsl(20, 14%, 16%);">Subscription</h1>
+
+  <div class="rounded-2xl border p-6" style="background-color: white; border-color: hsl(30, 15%, 90%);">
+    <% if @pro_profile.tier_pro? %>
+      <!-- Active Pro Subscription -->
+      <div class="flex items-center gap-3 mb-4">
+        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium" style="background-color: rgba(236, 72, 153, 0.1); color: #EC4899;">
+          Pro Plan
+        </span>
+        <span class="text-sm" style="color: hsl(25, 10%, 45%);">Active</span>
+      </div>
+
+      <p class="text-lg font-semibold mb-1" style="color: hsl(20, 14%, 16%);">€19/month</p>
+      
+      <% if @pro_profile.subscription_expires_at %>
+        <p class="text-sm mb-6" style="color: hsl(25, 10%, 45%);">
+          Next billing date: <%= @pro_profile.subscription_expires_at.strftime("%B %d, %Y") %>
+        </p>
+      <% end %>
+
+      <h3 class="font-medium mb-3" style="color: hsl(20, 14%, 16%);">Your Pro Benefits:</h3>
+      <ul class="space-y-2 mb-6">
+        <li class="flex items-center gap-2 text-sm" style="color: hsl(25, 10%, 45%);">
+          <svg class="w-4 h-4" style="color: #EC4899;" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+          </svg>
+          Priority placement in search results
+        </li>
+        <li class="flex items-center gap-2 text-sm" style="color: hsl(25, 10%, 45%);">
+          <svg class="w-4 h-4" style="color: #EC4899;" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+          </svg>
+          Verified Pro badge
+        </li>
+        <li class="flex items-center gap-2 text-sm" style="color: hsl(25, 10%, 45%);">
+          <svg class="w-4 h-4" style="color: #EC4899;" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+          </svg>
+          Accept online payments
+        </li>
+        <li class="flex items-center gap-2 text-sm" style="color: hsl(25, 10%, 45%);">
+          <svg class="w-4 h-4" style="color: #EC4899;" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+          </svg>
+          0% platform fees
+        </li>
+        <li class="flex items-center gap-2 text-sm" style="color: hsl(25, 10%, 45%);">
+          <svg class="w-4 h-4" style="color: #EC4899;" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+          </svg>
+          Analytics dashboard
+        </li>
+      </ul>
+
+      <%= button_to "Manage Subscription", portal_pros_subscription_path, method: :post, class: "w-full rounded-xl px-4 py-3 text-sm font-medium border transition-colors", style: "border-color: hsl(30, 15%, 85%); color: hsl(20, 14%, 16%);" %>
+
+    <% else %>
+      <!-- Free Plan -->
+      <div class="flex items-center gap-3 mb-4">
+        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium" style="background-color: hsl(30, 15%, 95%); color: hsl(25, 10%, 45%);">
+          Free Plan
+        </span>
+      </div>
+
+      <p class="mb-6" style="color: hsl(25, 10%, 45%);">
+        Upgrade to Pro to unlock all features and grow your business.
+      </p>
+
+      <div class="rounded-xl border p-4 mb-6" style="background-color: hsl(30, 20%, 98%); border-color: hsl(30, 15%, 90%);">
+        <h3 class="font-medium mb-3" style="color: hsl(20, 14%, 16%);">Pro Plan — €19/month</h3>
+        <ul class="space-y-2">
+          <li class="flex items-center gap-2 text-sm" style="color: hsl(25, 10%, 45%);">
+            <svg class="w-4 h-4" style="color: #EC4899;" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+            </svg>
+            Priority placement in search results
+          </li>
+          <li class="flex items-center gap-2 text-sm" style="color: hsl(25, 10%, 45%);">
+            <svg class="w-4 h-4" style="color: #EC4899;" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+            </svg>
+            Verified Pro badge
+          </li>
+          <li class="flex items-center gap-2 text-sm" style="color: hsl(25, 10%, 45%);">
+            <svg class="w-4 h-4" style="color: #EC4899;" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+            </svg>
+            Accept online payments
+          </li>
+          <li class="flex items-center gap-2 text-sm" style="color: hsl(25, 10%, 45%);">
+            <svg class="w-4 h-4" style="color: #EC4899;" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+            </svg>
+            0% platform fees
+          </li>
+          <li class="flex items-center gap-2 text-sm" style="color: hsl(25, 10%, 45%);">
+            <svg class="w-4 h-4" style="color: #EC4899;" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+            </svg>
+            Analytics dashboard
+          </li>
+        </ul>
+      </div>
+
+      <%= button_to "Upgrade to Pro", pros_subscription_path, method: :post, class: "w-full rounded-xl px-4 py-3 text-sm font-medium text-white transition-colors", style: "background-color: #EC4899;" %>
+    <% end %>
+  </div>
+
+  <div class="mt-6 text-center">
+    <%= link_to "← Back to Dashboard", dashboard_path, class: "text-sm", style: "color: #EC4899;" %>
+  </div>
+</div>
