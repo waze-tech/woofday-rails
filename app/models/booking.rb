@@ -26,6 +26,21 @@ class Booking < ApplicationRecord
   scope :upcoming, -> { where("start_time > ?", Time.current).order(:start_time) }
   scope :past, -> { where("end_time < ?", Time.current).order(end_time: :desc) }
   scope :active, -> { where(status: [:pending, :confirmed, :in_progress]) }
+  scope :needs_completion_check, -> { 
+    confirmed
+      .where("end_time < ?", 2.hours.ago)
+      .where(completion_requested_at: nil)
+  }
+  scope :awaiting_customer_confirmation, -> {
+    confirmed
+      .where.not(completion_requested_at: nil)
+      .where("completion_requested_at < ?", 24.hours.ago)
+      .where(customer_reported_issue: [nil, false])
+  }
+
+  def active?
+    pending? || confirmed? || in_progress?
+  end
 
   def duration_hours
     ((end_time - start_time) / 1.hour).round(1)
@@ -51,6 +66,30 @@ class Booking < ApplicationRecord
   def decline!(reason = nil)
     update!(status: :declined)
     BookingMailer.declined(self).deliver_later
+  end
+
+  def request_completion_confirmation!
+    update!(completion_requested_at: Time.current)
+    # TODO: Send push notification to customer
+    # "Did your booking with [Pro] happen?"
+  end
+
+  def customer_confirms_complete!
+    update!(status: :completed)
+    BookingMailer.completed(self).deliver_later
+    # Review request after 2 hours
+    ReviewRequestJob.set(wait: 2.hours).perform_later(self.id)
+  end
+
+  def customer_reports_issue!(reason)
+    update!(customer_reported_issue: true, issue_reason: reason)
+    # TODO: Notify admin for review
+  end
+
+  def auto_complete!
+    # Called when customer ignores for 24h
+    update!(status: :completed)
+    ReviewRequestJob.set(wait: 2.hours).perform_later(self.id)
   end
 
   private

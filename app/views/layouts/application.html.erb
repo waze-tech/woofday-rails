@@ -5,15 +5,16 @@
     <title>woof.day - Find Trusted Pet Care</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
     <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
     <style>
-      body { font-family: 'Inter', sans-serif; }
-      h1, h2, h3, .font-heading { font-family: 'Plus Jakarta Sans', sans-serif; }
-      .font-serif { font-family: 'Plus Jakarta Sans', sans-serif; }
+      body { font-family: 'Nunito', sans-serif; }
+      h1, h2, h3, h4, h5, h6, .font-heading { font-family: 'Nunito', sans-serif; }
+      .font-serif { font-family: 'Nunito', sans-serif; }
+      input, select, textarea, button { font-family: 'Nunito', sans-serif; }
     </style>
   </head>
   <body class="min-h-full flex flex-col" style="background-color: #FAF7F2; color: #3D2E1F;">
@@ -23,20 +24,20 @@
         <div class="flex items-center justify-between">
           <%= link_to root_path, class: "flex items-center gap-3" do %>
             <img src="/logo.png" alt="Woof.Day" class="h-16 w-auto">
-            <span class="text-2xl font-serif" style="font-weight: 700; color: #3D2E1F;">Woof.Day</span>
+            <span class="text-2xl" style="font-weight: 800; color: #3D2E1F; font-family: 'Nunito', sans-serif;">Woof.Day</span>
           <% end %>
 
           <nav class="hidden md:flex items-center gap-6">
-            <%= link_to "Services", search_path, class: "transition-colors", style: "color: rgba(61, 46, 31, 0.7);" %>
-            <%= link_to "How it works", "#how-it-works", class: "transition-colors", style: "color: rgba(61, 46, 31, 0.7);" %>
-            <%= link_to "For Pros", pricing_path, class: "transition-colors", style: "color: rgba(61, 46, 31, 0.7);" %>
+            <%= link_to "Services", search_path, class: "font-semibold transition-colors hover:text-amber-700", style: "color: rgba(61, 46, 31, 0.7); font-family: 'Nunito', sans-serif;" %>
+            <%= link_to "How it works", "#how-it-works", class: "font-semibold transition-colors hover:text-amber-700", style: "color: rgba(61, 46, 31, 0.7); font-family: 'Nunito', sans-serif;" %>
+            <%= link_to "For Pros", pricing_path, class: "font-semibold transition-colors hover:text-amber-700", style: "color: rgba(61, 46, 31, 0.7); font-family: 'Nunito', sans-serif;" %>
 
             <% if authenticated? %>
-              <%= link_to dashboard_path, class: "px-6 py-2.5 rounded-2xl shadow-sm transition-all", style: "background-color: #8B6F47; color: #FAF7F2;" do %>
+              <%= link_to dashboard_path, class: "px-6 py-2.5 rounded-2xl shadow-sm transition-all font-bold hover:translate-y-[-1px]", style: "background: linear-gradient(135deg, #8B6F47, #A68B5B); color: #FAF7F2; font-family: 'Nunito', sans-serif; box-shadow: 0 2px 8px rgba(139, 111, 71, 0.25);" do %>
                 Dashboard
               <% end %>
             <% else %>
-              <%= link_to new_session_path, class: "px-6 py-2.5 rounded-2xl shadow-sm transition-all", style: "background-color: #8B6F47; color: #FAF7F2;" do %>
+              <%= link_to new_session_path, class: "px-6 py-2.5 rounded-2xl shadow-sm transition-all font-bold hover:translate-y-[-1px]", style: "background: linear-gradient(135deg, #8B6F47, #A68B5B); color: #FAF7F2; font-family: 'Nunito', sans-serif; box-shadow: 0 2px 8px rgba(139, 111, 71, 0.25);" do %>
                 Log In
               <% end %>
             <% end %>
@@ -80,31 +81,31 @@
           <div class="md:col-span-2">
             <div class="flex items-center gap-3 mb-4">
               <img src="/logo.png" alt="Woof.Day" class="h-14 w-auto">
-              <span class="text-2xl font-serif" style="font-weight: 700; color: #3D2E1F;">Woof.Day</span>
+              <span class="text-2xl" style="font-weight: 800; color: #3D2E1F; font-family: 'Nunito', sans-serif;">Woof.Day</span>
             </div>
-            <p style="color: rgba(61, 46, 31, 0.6);" class="mb-4">
+            <p style="color: rgba(61, 46, 31, 0.6); font-family: 'Nunito', sans-serif;" class="mb-4">
               The trusted pet care network connecting pet owners with verified professionals.
             </p>
-            <p class="text-sm" style="color: rgba(61, 46, 31, 0.5);">Made with love for pets · © <%= Time.current.year %> woof.day</p>
+            <p class="text-sm font-medium" style="color: rgba(61, 46, 31, 0.5); font-family: 'Nunito', sans-serif;">Made with love for pets · © <%= Time.current.year %> woof.day</p>
           </div>
 
           <div>
-            <h4 class="mb-4" style="font-weight: 600; color: #3D2E1F;">Services</h4>
+            <h4 class="mb-4 font-bold" style="color: #3D2E1F; font-family: 'Nunito', sans-serif;">Services</h4>
             <div class="space-y-2">
-              <%= link_to "Pet Grooming", search_path(service: "grooming"), class: "block transition-colors", style: "color: rgba(61, 46, 31, 0.6);" %>
-              <%= link_to "Dog Walking", search_path(service: "walking"), class: "block transition-colors", style: "color: rgba(61, 46, 31, 0.6);" %>
-              <%= link_to "Pet Sitting", search_path(service: "sitting"), class: "block transition-colors", style: "color: rgba(61, 46, 31, 0.6);" %>
-              <%= link_to "Training", search_path(service: "training"), class: "block transition-colors", style: "color: rgba(61, 46, 31, 0.6);" %>
+              <%= link_to "Pet Grooming", search_path(service: "grooming"), class: "block font-medium transition-colors hover:text-amber-700", style: "color: rgba(61, 46, 31, 0.6); font-family: 'Nunito', sans-serif;" %>
+              <%= link_to "Dog Walking", search_path(service: "walking"), class: "block font-medium transition-colors hover:text-amber-700", style: "color: rgba(61, 46, 31, 0.6); font-family: 'Nunito', sans-serif;" %>
+              <%= link_to "Pet Sitting", search_path(service: "sitting"), class: "block font-medium transition-colors hover:text-amber-700", style: "color: rgba(61, 46, 31, 0.6); font-family: 'Nunito', sans-serif;" %>
+              <%= link_to "Training", search_path(service: "training"), class: "block font-medium transition-colors hover:text-amber-700", style: "color: rgba(61, 46, 31, 0.6); font-family: 'Nunito', sans-serif;" %>
             </div>
           </div>
 
           <div>
-            <h4 class="mb-4" style="font-weight: 600; color: #3D2E1F;">Company</h4>
+            <h4 class="mb-4 font-bold" style="color: #3D2E1F; font-family: 'Nunito', sans-serif;">Company</h4>
             <div class="space-y-2">
-              <a href="#" class="block transition-colors" style="color: rgba(61, 46, 31, 0.6);">About Us</a>
-              <%= link_to "Become a Pro", new_pro_profile_path, class: "block transition-colors", style: "color: rgba(61, 46, 31, 0.6);" %>
-              <a href="#" class="block transition-colors" style="color: rgba(61, 46, 31, 0.6);">Terms</a>
-              <a href="#" class="block transition-colors" style="color: rgba(61, 46, 31, 0.6);">Privacy</a>
+              <a href="#" class="block font-medium transition-colors hover:text-amber-700" style="color: rgba(61, 46, 31, 0.6); font-family: 'Nunito', sans-serif;">About Us</a>
+              <%= link_to "Become a Pro", new_pro_profile_path, class: "block font-medium transition-colors hover:text-amber-700", style: "color: rgba(61, 46, 31, 0.6); font-family: 'Nunito', sans-serif;" %>
+              <a href="#" class="block font-medium transition-colors hover:text-amber-700" style="color: rgba(61, 46, 31, 0.6); font-family: 'Nunito', sans-serif;">Terms</a>
+              <a href="#" class="block font-medium transition-colors hover:text-amber-700" style="color: rgba(61, 46, 31, 0.6); font-family: 'Nunito', sans-serif;">Privacy</a>
             </div>
           </div>
         </div>

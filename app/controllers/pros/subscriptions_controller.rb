@@ -5,7 +5,9 @@ module Pros
     before_action :set_pro_profile
 
     def show
-      # Show current subscription status
+      if params[:inline]
+        render partial: "pros/subscriptions/inline", layout: false
+      end
     end
 
     def create

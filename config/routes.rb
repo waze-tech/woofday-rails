@@ -36,6 +36,7 @@ Rails.application.routes.draw do
     end
     
     # Pro Dashboard sections
+    resources :services
     resources :portfolio_photos, only: %i[ index create destroy ] do
       collection do
         patch :reorder
@@ -56,6 +57,16 @@ Rails.application.routes.draw do
   # Bookings
   resources :bookings, only: [:index, :show, :update] do
     resource :review, only: [:new, :create]
+    member do
+      post :confirm_complete
+      post :report_issue
+    end
+  end
+
+  resources :reviews, only: [] do
+    member do
+      post :flag
+    end
   end
 
   # Search

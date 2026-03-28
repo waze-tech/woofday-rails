@@ -1,0 +1,40 @@
+<%= turbo_frame_tag "pro_panel" do %><div style="min-height: 360px;">
+  <div class="px-5 py-4 border-b" style="border-color: rgba(139, 111, 71, 0.1);">
+    <h2 class="text-lg font-semibold" style="color: #3D2E1F;">Portfolio</h2>
+    <p class="text-sm mt-1" style="color: rgba(61, 46, 31, 0.5);">Showcase your best work</p>
+  </div>
+  
+  <div class="p-5">
+    <!-- Add Photo Form -->
+    <%= form_with model: PortfolioPhoto.new, url: pros_portfolio_photos_path(inline: true), class: "flex flex-wrap gap-3 mb-5 p-4 rounded-xl", style: "background-color: rgba(139, 111, 71, 0.03);", multipart: true do |f| %>
+      <div class="flex-1 min-w-[200px]">
+        <%= f.file_field :image, accept: "image/*", class: "w-full text-sm file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-sm file:cursor-pointer", style: "color: rgba(61, 46, 31, 0.6);" %>
+      </div>
+      <span class="self-center text-xs" style="color: rgba(61, 46, 31, 0.4);">or</span>
+      <%= f.url_field :url, placeholder: "Image URL", class: "flex-1 min-w-[150px] px-3 py-2 text-sm border rounded-lg", style: "border-color: rgba(139, 111, 71, 0.2);" %>
+      <%= f.submit "Add", class: "px-4 py-2 text-sm rounded-lg cursor-pointer", style: "background-color: #8B6F47; color: white;" %>
+    <% end %>
+
+    <!-- Photo Grid -->
+    <% if @photos.any? %>
+      <div class="grid grid-cols-3 gap-3">
+        <% @photos.each do |photo| %>
+          <div class="relative group aspect-square rounded-xl overflow-hidden" style="background-color: rgba(139, 111, 71, 0.1);">
+            <%= image_tag photo.display_url, class: "w-full h-full object-cover" %>
+            <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+              <%= button_to pros_portfolio_photo_path(photo, inline: true), method: :delete, data: { turbo_confirm: "Remove?" }, class: "p-2 bg-red-500 text-white rounded-lg" do %>
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <div class="p-8 text-center">
+        <div class="text-4xl mb-2">📸</div>
+        <p class="text-sm" style="color: rgba(61, 46, 31, 0.6);">No photos yet</p>
+        <p class="text-xs mt-1" style="color: rgba(61, 46, 31, 0.4);">Show off your best work!</p>
+      </div>
+    <% end %>
+  </div>
+</div><% end %>

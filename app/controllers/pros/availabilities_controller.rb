@@ -4,15 +4,22 @@ class Pros::AvailabilitiesController < ApplicationController
   def index
     @availabilities = current_pro_profile.availabilities.ordered
     @availability = Availability.new
+    
+    if params[:inline]
+      render partial: "pros/availabilities/inline", layout: false
+    end
   end
 
   def create
     @availability = current_pro_profile.availabilities.build(availability_params)
     
     if @availability.save
+      @availabilities = current_pro_profile.availabilities.ordered
+      @availability = Availability.new
+      
       respond_to do |format|
-        format.html { redirect_to pros_availabilities_path, notice: "Availability added!" }
         format.turbo_stream
+        format.html { redirect_to pros_availabilities_path, notice: "Availability added!" }
       end
     else
       redirect_to pros_availabilities_path, alert: @availability.errors.full_messages.join(", ")
@@ -33,9 +40,12 @@ class Pros::AvailabilitiesController < ApplicationController
     @availability = current_pro_profile.availabilities.find(params[:id])
     @availability.destroy
     
+    @availabilities = current_pro_profile.availabilities.ordered
+    @availability = Availability.new
+    
     respond_to do |format|
-      format.html { redirect_to pros_availabilities_path, notice: "Availability removed." }
       format.turbo_stream
+      format.html { redirect_to pros_availabilities_path, notice: "Availability removed." }
     end
   end
 

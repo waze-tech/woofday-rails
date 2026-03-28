@@ -8,6 +8,11 @@ class DashboardController < ApplicationController
     if @user.pro?
       @pro_profile = @user.pro_profile
       @pro_bookings = @pro_profile&.bookings&.upcoming&.includes(:pet)&.limit(10)
+      @recent_reviews = @pro_profile&.reviews&.published&.recent&.limit(5)
+      @review_stats = {
+        total: @pro_profile&.reviews&.published&.count || 0,
+        average: @pro_profile&.reviews&.published&.average(:rating)&.round(1) || 0
+      }
       
       # Handle Stripe subscription success redirect
       if params[:subscription] == "success"

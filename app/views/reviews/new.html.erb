@@ -1,54 +1,55 @@
-<div class="max-w-2xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
-  <div class="mb-8 text-center">
-    <div class="inline-flex h-14 w-14 items-center justify-center rounded-2xl text-white mb-4" style="background: linear-gradient(135deg, #F59E0B, #EC4899);">
-      <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 24 24">
-        <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
-      </svg>
-    </div>
-    <h1 class="text-2xl font-bold" style="color: hsl(20, 14%, 16%);">Leave a Review</h1>
-    <p class="mt-2" style="color: hsl(25, 10%, 45%);">How was your experience with <%= @booking.pro_profile.business_name %>?</p>
-  </div>
+<div class="mx-auto px-4 py-8" style="max-width: 520px; font-family: 'Nunito', sans-serif;">
+  
+  <%= link_to booking_path(@booking), class: "inline-flex items-center gap-2 text-sm font-medium mb-6", style: "color: #8B6F47;" do %>
+    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"/></svg>
+    Back
+  <% end %>
 
-  <%= form_with model: @review, url: booking_reviews_path(@booking), class: "space-y-6" do |f| %>
+  <h1 class="text-2xl font-bold mb-2" style="color: #3D2E1F;">Leave a Review</h1>
+  <p class="text-sm mb-6" style="color: #A89F91;">How was your experience with <%= @booking.pro_profile.business_name %>?</p>
+
+  <%= form_with model: [@booking, @review], local: true, data: { controller: "star-rating photo-preview" } do |f| %>
+    
     <% if @review.errors.any? %>
-      <div class="rounded-xl border p-4" style="background-color: rgba(239, 68, 68, 0.1); border-color: rgba(239, 68, 68, 0.2);">
-        <% @review.errors.full_messages.each do |message| %>
-          <p class="text-sm" style="color: rgb(153, 27, 27);"><%= message %></p>
+      <div class="mb-4 p-3" style="background: #FFEBEE; color: #C62828;">
+        <% @review.errors.full_messages.each do |msg| %>
+          <p class="text-sm"><%= msg %></p>
         <% end %>
       </div>
     <% end %>
 
-    <div class="rounded-xl border p-6 space-y-6" style="background-color: white; border-color: hsl(35, 20%, 88%);">
-      <div>
-        <label class="block text-sm font-medium mb-3" style="color: hsl(25, 10%, 45%);">Rating</label>
-        <div class="flex gap-2">
-          <% (1..5).each do |star| %>
-            <label class="cursor-pointer group">
-              <%= f.radio_button :rating, star, class: "sr-only peer", required: true %>
-              <span class="text-4xl transition peer-checked:scale-110" style="color: hsl(35, 20%, 88%);" 
-                    onmouseover="this.style.color='#F59E0B'" 
-                    onmouseout="if(!this.previousElementSibling.checked) this.style.color='hsl(35, 20%, 88%)'"
-                    onclick="this.style.color='#F59E0B'; document.querySelectorAll('.star-rating').forEach((s,i) => s.style.color = i < <%= star %> ? '#F59E0B' : 'hsl(35, 20%, 88%)')">★</span>
-            </label>
-          <% end %>
-        </div>
-      </div>
-
-      <div>
-        <label class="block text-sm font-medium mb-1" style="color: hsl(25, 10%, 45%);">Your Review</label>
-        <%= f.text_area :comment,
-            rows: 4,
-            placeholder: "Tell others about your experience...",
-            class: "w-full rounded-xl border px-4 py-3 text-sm focus:outline-none focus:ring-2 resize-none",
-            style: "border-color: hsl(35, 20%, 88%);" %>
+    <!-- Star Rating -->
+    <div class="mb-6">
+      <label class="block text-sm font-bold mb-3" style="color: #3D2E1F;">Rating</label>
+      <div class="flex gap-2" data-star-rating-target="stars">
+        <% (1..5).each do |n| %>
+          <label class="cursor-pointer">
+            <%= f.radio_button :rating, n, class: "hidden", data: { action: "star-rating#select", star_rating_target: "input" } %>
+            <span class="text-3xl transition-colors" data-star-rating-target="star" data-value="<%= n %>" style="color: #E8E0D5;">★</span>
+          </label>
+        <% end %>
       </div>
     </div>
 
-    <div class="flex items-center gap-4">
-      <%= f.submit "Submit Review", 
-          class: "rounded-xl px-6 py-3 text-base font-bold text-white shadow-md transition cursor-pointer",
-          style: "background-color: #EC4899; box-shadow: 0 4px 14px rgba(236, 72, 153, 0.2);" %>
-      <%= link_to "Cancel", dashboard_path, class: "font-medium", style: "color: hsl(25, 10%, 45%);" %>
+    <!-- Review Text -->
+    <div class="mb-6">
+      <label class="block text-sm font-bold mb-2" style="color: #3D2E1F;">Your Review <span style="color: #A89F91; font-weight: normal;">(optional)</span></label>
+      <%= f.text_area :content, rows: 4, placeholder: "Tell others about your experience...", class: "w-full px-4 py-3 text-sm", style: "border: 1px solid #E8E0D5; background: white; color: #3D2E1F; resize: none;" %>
     </div>
+
+    <!-- Photo Upload -->
+    <div class="mb-6">
+      <label class="block text-sm font-bold mb-2" style="color: #3D2E1F;">Add Photos <span style="color: #A89F91; font-weight: normal;">(optional)</span></label>
+      <div class="flex flex-wrap gap-3" data-photo-preview-target="container">
+        <label class="w-20 h-20 flex items-center justify-center cursor-pointer" style="border: 2px dashed #E8E0D5;">
+          <%= f.file_field :photos, multiple: true, accept: "image/*", class: "hidden", data: { action: "photo-preview#preview", photo_preview_target: "input" } %>
+          <span class="text-2xl" style="color: #A89F91;">+</span>
+        </label>
+      </div>
+      <p class="text-xs mt-2" style="color: #A89F91;">Share photos from <%= @booking.pet&.name %>'s visit</p>
+    </div>
+
+    <!-- Submit -->
+    <%= f.submit "Submit Review", class: "w-full py-3 text-sm font-bold cursor-pointer", style: "background: #8B6F47; color: white;" %>
   <% end %>
 </div>

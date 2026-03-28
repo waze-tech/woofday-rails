@@ -1,5 +1,5 @@
 class BookingsController < ApplicationController
-  before_action :set_booking, only: [:show, :update]
+  before_action :set_booking, only: [:show, :update, :confirm_complete, :report_issue]
 
   def index
     @upcoming = Current.user.bookings.upcoming.includes(:pet, :pro_profile)
@@ -51,6 +51,26 @@ class BookingsController < ApplicationController
     end
 
     redirect_to dashboard_path, notice: notice
+  end
+
+  # Customer confirms booking happened
+  def confirm_complete
+    unless @booking.customer == Current.user
+      return redirect_to dashboard_path, alert: "Not authorized"
+    end
+
+    @booking.customer_confirms_complete!
+    redirect_to new_booking_review_path(@booking), notice: "Thanks for confirming! Leave a review?"
+  end
+
+  # Customer reports an issue
+  def report_issue
+    unless @booking.customer == Current.user
+      return redirect_to dashboard_path, alert: "Not authorized"
+    end
+
+    @booking.customer_reports_issue!(params[:reason])
+    redirect_to dashboard_path, notice: "Issue reported. We'll look into it."
   end
 
   private

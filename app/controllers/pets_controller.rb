@@ -6,6 +6,7 @@ class PetsController < ApplicationController
   end
 
   def show
+    @pet = Current.user.pets.find(params[:id])
   end
 
   def new

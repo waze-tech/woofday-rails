@@ -1,5 +1,5 @@
 class ProProfilesController < ApplicationController
-  allow_unauthenticated_access only: [:index, :show]
+  allow_unauthenticated_access only: [:index, :show, :show_by_slug]
   before_action :set_pro_profile, only: [:show]
   before_action :set_own_profile, only: [:edit, :update]
 
@@ -41,6 +41,9 @@ class ProProfilesController < ApplicationController
   end
 
   def edit
+    if params[:inline]
+      render partial: "pro_profiles/inline", layout: false
+    end
   end
 
   def update

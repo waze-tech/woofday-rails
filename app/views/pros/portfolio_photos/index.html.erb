@@ -7,10 +7,22 @@
   <!-- Add Photo Form -->
   <div class="border-2 rounded-2xl p-6 mb-8" style="background-color: #FFFFFF; border-color: rgba(139, 111, 71, 0.15);">
     <h2 class="text-lg font-semibold mb-4" style="color: #3D2E1F;">Add Photo</h2>
-    <%= form_with model: PortfolioPhoto.new, url: pros_portfolio_photos_path, class: "space-y-4" do |f| %>
+    <%= form_with model: PortfolioPhoto.new, url: pros_portfolio_photos_path, class: "space-y-4", multipart: true do |f| %>
+      <div>
+        <%= f.label :image, "Upload Image", class: "block text-sm font-medium mb-1", style: "color: #3D2E1F;" %>
+        <%= f.file_field :image, accept: "image/*", class: "w-full h-12 px-4 py-2 border-2 rounded-xl focus:outline-none focus:ring-2 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:cursor-pointer", style: "border-color: rgba(139, 111, 71, 0.2); color: #3D2E1F; --file-bg: #8B6F47; --file-text: white;" %>
+      </div>
+      <div class="relative">
+        <div class="absolute inset-0 flex items-center" aria-hidden="true">
+          <div class="w-full border-t" style="border-color: rgba(139, 111, 71, 0.15);"></div>
+        </div>
+        <div class="relative flex justify-center text-sm">
+          <span class="px-3" style="background-color: #FFFFFF; color: rgba(61, 46, 31, 0.5);">or paste URL</span>
+        </div>
+      </div>
       <div>
         <%= f.label :url, "Image URL", class: "block text-sm font-medium mb-1", style: "color: #3D2E1F;" %>
-        <%= f.url_field :url, required: true, placeholder: "https://example.com/photo.jpg", class: "w-full h-12 px-4 border-2 rounded-xl focus:outline-none focus:ring-2", style: "border-color: rgba(139, 111, 71, 0.2); color: #3D2E1F;" %>
+        <%= f.url_field :url, placeholder: "https://example.com/photo.jpg", class: "w-full h-12 px-4 border-2 rounded-xl focus:outline-none focus:ring-2", style: "border-color: rgba(139, 111, 71, 0.2); color: #3D2E1F;" %>
       </div>
       <div>
         <%= f.label :caption, "Caption (optional)", class: "block text-sm font-medium mb-1", style: "color: #3D2E1F;" %>
@@ -25,7 +37,7 @@
     <div class="grid grid-cols-2 md:grid-cols-3 gap-4" id="portfolio-grid">
       <% @photos.each do |photo| %>
         <div class="relative group rounded-xl overflow-hidden aspect-square" style="background-color: #E8DFD3;">
-          <img src="<%= photo.url %>" alt="<%= photo.caption %>" class="w-full h-full object-cover">
+          <%= image_tag photo.display_url, alt: photo.caption || "Portfolio photo", class: "w-full h-full object-cover" %>
           <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
             <%= button_to pros_portfolio_photo_path(photo), method: :delete, data: { turbo_confirm: "Remove this photo?" }, class: "p-2 bg-red-500 text-white rounded-lg" do %>
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -1,0 +1,92 @@
+<%= turbo_frame_tag "pro_panel" do %><div style="min-height: 360px; font-family: 'Nunito', sans-serif; overflow: hidden;">
+  <div class="px-6 py-4" style="border-bottom: 1px solid #E8E0D5;">
+    <h2 class="text-lg font-bold" style="color: #3D2E1F;">Blocked Dates</h2>
+    <p class="text-sm mt-1" style="color: #A89F91;">Mark times you're unavailable for bookings</p>
+  </div>
+  
+  <div class="p-5">
+    <!-- Add Blocked Date Form -->
+    <%= form_with model: @blocked_date, url: pros_blocked_dates_path, data: { controller: "block-type" }, class: "mb-6 pb-6", style: "border-bottom: 1px solid #E8E0D5;" do |f| %>
+      
+      <!-- Block Type Selector -->
+      <div class="flex gap-2 mb-4">
+        <label class="flex items-center gap-2 px-3 py-2 cursor-pointer" style="background: #F5F2ED;">
+          <%= f.radio_button :block_type, "full_day", checked: true, data: { action: "block-type#toggle", block_type_target: "radio" } %>
+          <span class="text-sm font-medium" style="color: #3D2E1F;">Full Day</span>
+        </label>
+        <label class="flex items-center gap-2 px-3 py-2 cursor-pointer" style="background: #F5F2ED;">
+          <%= f.radio_button :block_type, "time_slot", data: { action: "block-type#toggle", block_type_target: "radio" } %>
+          <span class="text-sm font-medium" style="color: #3D2E1F;">Time Slot</span>
+        </label>
+        <label class="flex items-center gap-2 px-3 py-2 cursor-pointer" style="background: #F5F2ED;">
+          <%= f.radio_button :block_type, "date_range", data: { action: "block-type#toggle", block_type_target: "radio" } %>
+          <span class="text-sm font-medium" style="color: #3D2E1F;">Date Range</span>
+        </label>
+      </div>
+
+      <div class="flex flex-wrap items-end gap-3">
+        <!-- Start Date (always shown) -->
+        <div>
+          <label class="block text-xs font-medium mb-1" style="color: #A89F91;">Date</label>
+          <%= f.date_field :date, min: Date.today, required: true, class: "px-3 py-2 text-sm", style: "border: 1px solid #E8E0D5; background: white; color: #3D2E1F;" %>
+        </div>
+
+        <!-- End Date (date_range only) -->
+        <div data-block-type-target="dateRange" class="hidden">
+          <label class="block text-xs font-medium mb-1" style="color: #A89F91;">End Date</label>
+          <%= f.date_field :end_date, min: Date.today, class: "px-3 py-2 text-sm", style: "border: 1px solid #E8E0D5; background: white; color: #3D2E1F;" %>
+        </div>
+
+        <!-- Time Fields (time_slot only) -->
+        <div data-block-type-target="timeSlot" class="hidden flex items-end gap-2">
+          <div>
+            <label class="block text-xs font-medium mb-1" style="color: #A89F91;">From</label>
+            <%= f.select :start_time, (6..22).map { |h| ["%02d:00" % h, "%02d:00" % h] }, { selected: "09:00" }, class: "px-3 py-2 text-sm", style: "border: 1px solid #E8E0D5; background: white; color: #3D2E1F;" %>
+          </div>
+          <div>
+            <label class="block text-xs font-medium mb-1" style="color: #A89F91;">To</label>
+            <%= f.select :end_time, (6..22).map { |h| ["%02d:00" % h, "%02d:00" % h] }, { selected: "17:00" }, class: "px-3 py-2 text-sm", style: "border: 1px solid #E8E0D5; background: white; color: #3D2E1F;" %>
+          </div>
+        </div>
+
+        <!-- Reason -->
+        <div class="flex-1">
+          <label class="block text-xs font-medium mb-1" style="color: #A89F91;">Reason</label>
+          <%= f.text_field :reason, placeholder: "Optional", class: "w-full px-3 py-2 text-sm", style: "border: 1px solid #E8E0D5; background: white; color: #3D2E1F;" %>
+        </div>
+
+        <%= f.submit "Block", class: "px-4 py-2 text-sm font-bold cursor-pointer", style: "background: #8B6F47; color: white;" %>
+      </div>
+    <% end %>
+
+    <!-- Blocked Dates List -->
+    <% if @blocked_dates.any? %>
+      <div class="space-y-2">
+        <% @blocked_dates.each do |blocked| %>
+          <div class="flex items-center justify-between py-3" style="border-bottom: 1px solid #F5F2ED;">
+            <div class="flex items-center gap-3">
+              <div class="w-8 h-8 flex items-center justify-center" style="background: #FFEBEE; color: #C62828;">
+                <% if blocked.date_range? %>⬛<% elsif blocked.time_slot? %>⏰<% else %>🚫<% end %>
+              </div>
+              <div>
+                <p class="font-medium text-sm" style="color: #3D2E1F;"><%= blocked.display_text %></p>
+                <% if blocked.reason.present? %>
+                  <p class="text-xs" style="color: #A89F91;"><%= blocked.reason %></p>
+                <% end %>
+              </div>
+            </div>
+            <%= button_to pros_blocked_date_path(blocked), method: :delete, class: "text-xs font-medium cursor-pointer", style: "color: #C62828;", data: { turbo_confirm: "Unblock?" } do %>
+              Remove
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <div class="py-8 text-center">
+        <p class="text-4xl mb-2">📆</p>
+        <p class="font-medium" style="color: #3D2E1F;">No blocked dates</p>
+        <p class="text-sm mt-1" style="color: #A89F91;">You're available every day!</p>
+      </div>
+    <% end %>
+  </div>
+</div><% end %>

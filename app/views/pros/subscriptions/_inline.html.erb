@@ -1,0 +1,59 @@
+<%= turbo_frame_tag "pro_panel" do %><div style="min-height: 360px;">
+  <div class="px-5 py-4 border-b" style="border-color: rgba(139, 111, 71, 0.1);">
+    <h2 class="text-lg font-semibold" style="color: #3D2E1F;">Subscription</h2>
+  </div>
+  
+  <div class="p-5">
+    <% if @pro_profile.tier_pro? %>
+      <!-- Active Subscription -->
+      <div class="p-4 rounded-xl mb-4" style="background-color: rgba(139, 111, 71, 0.05);">
+        <div class="flex items-center gap-3 mb-3">
+          <div class="w-10 h-10 rounded-lg flex items-center justify-center" style="background-color: rgba(139, 111, 71, 0.15);">
+            <svg class="w-5 h-5" fill="none" stroke="#8B6F47" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/></svg>
+          </div>
+          <div>
+            <p class="font-semibold" style="color: #3D2E1F;">Pet Care Pro</p>
+            <p class="text-sm" style="color: rgba(61, 46, 31, 0.6);">€19/month</p>
+          </div>
+        </div>
+        <p class="text-sm mb-4" style="color: rgba(61, 46, 31, 0.6);">Your subscription is active. You have full access to all Pro features.</p>
+        <%= button_to portal_pros_subscription_path, method: :post, class: "w-full py-2 text-sm font-medium rounded-lg border cursor-pointer", style: "border-color: rgba(139, 111, 71, 0.2); color: #3D2E1F;", data: { turbo: false } do %>
+          Manage Billing
+        <% end %>
+      </div>
+      
+      <div class="text-sm" style="color: rgba(61, 46, 31, 0.5);">
+        <p class="mb-2">✓ Everything in Free</p>
+        <p class="mb-2">✓ Unlimited services</p>
+        <p class="mb-2">✓ Online booking system</p>
+        <p class="mb-2">✓ Calendar integration</p>
+        <p class="mb-2">✓ Verified reviews</p>
+        <p class="mb-2">✓ Social sharing tools</p>
+        <p>✓ Priority support</p>
+      </div>
+    <% else %>
+      <!-- Free Tier -->
+      <div class="text-center py-4">
+        <div class="text-4xl mb-3">🚀</div>
+        <h3 class="text-lg font-semibold mb-2" style="color: #3D2E1F;">Upgrade to Pro</h3>
+        <p class="text-sm mb-4" style="color: rgba(61, 46, 31, 0.6);">Get more clients with premium features</p>
+        
+        <div class="text-left p-4 rounded-xl mb-4" style="background-color: rgba(139, 111, 71, 0.05);">
+          <p class="text-sm mb-2" style="color: rgba(61, 46, 31, 0.6);">✓ Everything in Free</p>
+          <p class="text-sm mb-2" style="color: rgba(61, 46, 31, 0.6);">✓ Unlimited services</p>
+          <p class="text-sm mb-2" style="color: rgba(61, 46, 31, 0.6);">✓ Online booking system</p>
+          <p class="text-sm mb-2" style="color: rgba(61, 46, 31, 0.6);">✓ Calendar integration</p>
+          <p class="text-sm mb-2" style="color: rgba(61, 46, 31, 0.6);">✓ Verified reviews</p>
+          <p class="text-sm mb-2" style="color: rgba(61, 46, 31, 0.6);">✓ Social sharing tools</p>
+          <p class="text-sm" style="color: rgba(61, 46, 31, 0.6);">✓ Priority support</p>
+        </div>
+        
+        <p class="text-2xl font-bold mb-4" style="color: #8B6F47;">€19<span class="text-sm font-normal">/month</span></p>
+        
+        <%= button_to pros_subscription_path, method: :post, class: "w-full py-3 text-sm font-semibold rounded-xl cursor-pointer", style: "background-color: #8B6F47; color: white;", data: { turbo: false } do %>
+          Upgrade Now
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+</div><% end %>

@@ -3,6 +3,10 @@ class Pros::PortfolioPhotosController < ApplicationController
 
   def index
     @photos = current_pro_profile.portfolio_photos.ordered
+    
+    if params[:inline]
+      render partial: "pros/portfolio_photos/inline", layout: false
+    end
   end
 
   def create
@@ -39,7 +43,7 @@ class Pros::PortfolioPhotosController < ApplicationController
   private
 
   def photo_params
-    params.require(:portfolio_photo).permit(:url, :caption)
+    params.require(:portfolio_photo).permit(:url, :caption, :image)
   end
 
   def current_pro_profile

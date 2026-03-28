@@ -1,83 +1,202 @@
-<div class="max-w-2xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
-  <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
-    <div class="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
-      <h1 class="text-xl font-bold">Booking Details</h1>
-      <span class="px-3 py-1 rounded-full text-sm font-medium
-        <%= case @booking.status
-            when 'confirmed' then 'bg-green-100 text-green-800'
-            when 'completed' then 'bg-blue-100 text-blue-800'
-            when 'cancelled' then 'bg-red-100 text-red-800'
-            else 'bg-yellow-100 text-yellow-800'
-            end %>">
-        <%= @booking.status.titleize %>
-      </span>
-    </div>
+<div class="mx-auto px-4 py-8 sm:px-6" style="max-width: 720px; font-family: 'Nunito', sans-serif;">
+  
+  <!-- Header -->
+  <div class="flex items-center justify-between mb-8">
+    <%= link_to dashboard_path, class: "inline-flex items-center gap-2 text-sm font-medium", style: "color: #8B6F47;" do %>
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"/></svg>
+      Back
+    <% end %>
+    
+    <span class="px-3 py-1 text-xs font-bold uppercase tracking-wide" style="<%= 
+      case @booking.status
+      when 'confirmed' then 'background: #E8F5E9; color: #2E7D32;'
+      when 'completed' then 'background: #E3F2FD; color: #1565C0;'
+      when 'cancelled', 'declined' then 'background: #FFEBEE; color: #C62828;'
+      else 'background: #FFF8E1; color: #F57F17;'
+      end %>">
+      <%= @booking.status %>
+    </span>
+  </div>
 
-    <div class="p-6 space-y-6">
-      <div class="flex items-center gap-4">
-        <div class="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center text-3xl">
+  <!-- Main -->
+  <div class="grid gap-8 lg:grid-cols-5">
+    
+    <!-- Left: Booking Details -->
+    <div class="lg:col-span-3">
+      
+      <!-- Pet & Service -->
+      <div class="flex items-center gap-4 mb-6 pb-6" style="border-bottom: 1px solid #E8E0D5;">
+        <div class="w-16 h-16 flex items-center justify-center text-3xl" style="background: #F5F2ED;">
           🐕
         </div>
         <div>
-          <h2 class="text-lg font-semibold"><%= @booking.pet.name %></h2>
-          <p class="text-gray-600"><%= @booking.pet.breed.presence || @booking.pet.species.titleize %></p>
+          <h1 class="text-xl font-bold" style="color: #3D2E1F;"><%= @booking.pet&.name || 'Pet' %></h1>
+          <p class="text-sm" style="color: #8B7355;"><%= @booking.pet&.breed.presence || @booking.pet&.species&.titleize %></p>
+          <% if @booking.service %>
+            <span class="inline-block mt-1 px-2 py-0.5 text-xs font-medium" style="background: #F5F2ED; color: #8B6F47;"><%= @booking.service.name %></span>
+          <% end %>
         </div>
       </div>
-
-      <div class="grid grid-cols-2 gap-4">
+      
+      <!-- Date & Time -->
+      <div class="grid grid-cols-2 gap-6 mb-6 pb-6" style="border-bottom: 1px solid #E8E0D5;">
         <div>
-          <p class="text-sm text-gray-500">Pro</p>
-          <p class="font-medium"><%= @booking.pro_profile.business_name %></p>
+          <p class="text-xs font-medium uppercase tracking-wide mb-1" style="color: #A89F91;">Date</p>
+          <p class="font-bold" style="color: #3D2E1F;"><%= @booking.start_time.strftime("%A, %b %d") %></p>
         </div>
         <div>
-          <p class="text-sm text-gray-500">Duration</p>
-          <p class="font-medium"><%= @booking.duration_hours %> hours</p>
-        </div>
-        <div>
-          <p class="text-sm text-gray-500">Start</p>
-          <p class="font-medium"><%= @booking.start_time.strftime("%b %d, %Y at %I:%M %p") %></p>
-        </div>
-        <div>
-          <p class="text-sm text-gray-500">End</p>
-          <p class="font-medium"><%= @booking.end_time.strftime("%b %d, %Y at %I:%M %p") %></p>
+          <p class="text-xs font-medium uppercase tracking-wide mb-1" style="color: #A89F91;">Time</p>
+          <p class="font-bold" style="color: #3D2E1F;"><%= @booking.start_time.strftime("%I:%M %p") %> — <%= @booking.end_time.strftime("%I:%M %p") %></p>
         </div>
       </div>
 
       <% if @booking.notes.present? %>
-        <div>
-          <p class="text-sm text-gray-500 mb-1">Notes</p>
-          <p class="text-gray-700"><%= @booking.notes %></p>
+        <div class="mb-6 pb-6" style="border-bottom: 1px solid #E8E0D5;">
+          <p class="text-xs font-medium uppercase tracking-wide mb-1" style="color: #A89F91;">Notes</p>
+          <p style="color: #3D2E1F;"><%= @booking.notes %></p>
         </div>
       <% end %>
 
+      <!-- Total -->
       <% if @booking.total_price.present? %>
-        <div class="pt-4 border-t border-gray-200">
-          <div class="flex justify-between items-center">
-            <span class="text-lg font-semibold">Total</span>
-            <span class="text-2xl font-bold text-amber-600">$<%= @booking.total_price %></span>
+        <div class="flex items-center justify-between py-4" style="background: #F5F2ED; margin: 0 -1rem; padding-left: 1rem; padding-right: 1rem;">
+          <span class="font-medium" style="color: #3D2E1F;">Total</span>
+          <span class="text-2xl font-bold" style="color: #8B6F47;">€<%= @booking.total_price %></span>
+        </div>
+      <% end %>
+
+      <!-- Actions -->
+      <div class="mt-8">
+        <p class="text-xs font-medium uppercase tracking-wide mb-3" style="color: #A89F91;">Actions</p>
+        
+        <div class="flex flex-wrap gap-3">
+          <% if @booking.pending? && @booking.pro_profile.user == Current.user %>
+            <%= button_to booking_path(@booking, status: "confirm"), method: :patch, class: "px-5 py-2 text-sm font-bold cursor-pointer", style: "background: #2E7D32; color: white;" do %>
+              ✓ Confirm
+            <% end %>
+            <%= button_to booking_path(@booking, status: "decline"), method: :patch, data: { turbo_confirm: "Decline this booking?" }, class: "px-5 py-2 text-sm font-bold cursor-pointer", style: "background: #FFEBEE; color: #C62828;" do %>
+              ✕ Decline
+            <% end %>
+          <% end %>
+
+          <% if @booking.confirmed? && @booking.pro_profile.user == Current.user %>
+            <%= button_to booking_path(@booking, status: "complete"), method: :patch, class: "px-5 py-2 text-sm font-bold cursor-pointer", style: "background: #8B6F47; color: white;" do %>
+              Mark Complete
+            <% end %>
+          <% end %>
+
+          <% if @booking.active? %>
+            <%= button_to booking_path(@booking, status: "cancel"), method: :patch, data: { turbo_confirm: "Cancel this booking?" }, class: "px-5 py-2 text-sm font-bold cursor-pointer", style: "background: #FFF; color: #C62828; border: 1px solid #C62828;" do %>
+              Cancel Booking
+            <% end %>
+          <% end %>
+
+          <% if @booking.completed? && @booking.review.nil? && @booking.customer == Current.user %>
+            <%= link_to new_booking_review_path(@booking), class: "px-5 py-2 text-sm font-bold", style: "background: #8B6F47; color: white;" do %>
+              ★ Leave Review
+            <% end %>
+          <% end %>
+        </div>
+        
+        <% if @booking.completed? && @booking.review.present? %>
+          <div class="mt-4 p-4" style="background: #F5F2ED;">
+            <div class="flex items-center justify-between mb-2">
+              <div class="flex items-center gap-1">
+                <% @booking.review.rating.times do %>
+                  <svg class="w-4 h-4" fill="#F59E0B" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                <% end %>
+              </div>
+              <% if @booking.pro_profile.user == Current.user && @booking.review.published? %>
+                <%= button_to flag_review_path(@booking.review), method: :post, class: "text-xs cursor-pointer", style: "color: #C62828;", data: { turbo_confirm: "Flag this review for moderation?" } do %>
+                  Flag
+                <% end %>
+              <% end %>
+            </div>
+            <p class="text-sm" style="color: #3D2E1F;"><%= @booking.review.content %></p>
+            <% if @booking.review.photos.attached? %>
+              <div class="flex gap-2 mt-3">
+                <% @booking.review.photos.each do |photo| %>
+                  <%= image_tag photo, class: "w-16 h-16 object-cover" %>
+                <% end %>
+              </div>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+    
+    <!-- Right: Client & Pet -->
+    <div class="lg:col-span-2 space-y-6">
+      
+      <!-- Client -->
+      <div class="pb-6" style="border-bottom: 1px solid #E8E0D5;">
+        <p class="text-xs font-medium uppercase tracking-wide mb-3" style="color: #A89F91;">Client</p>
+        <div class="flex items-center gap-3 mb-3">
+          <div class="w-10 h-10 flex items-center justify-center text-sm font-bold" style="background: #F5F2ED; color: #8B6F47;">
+            <%= @booking.customer&.email_address&.first&.upcase || 'C' %>
+          </div>
+          <div>
+            <p class="font-bold" style="color: #3D2E1F;"><%= @booking.customer&.email_address&.split('@')&.first&.titleize || 'Client' %></p>
+            <p class="text-xs" style="color: #A89F91;"><%= @booking.customer&.email_address %></p>
           </div>
         </div>
-      <% end %>
-    </div>
+        <a href="mailto:<%= @booking.customer&.email_address %>" class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium" style="background: #F5F2ED; color: #8B6F47;">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"/></svg>
+          Send Message
+        </a>
+      </div>
 
-    <div class="px-6 py-4 bg-gray-50 border-t border-gray-200 flex flex-wrap gap-3">
-      <% if @booking.pending? && @booking.pro_profile.user == Current.user %>
-        <%= button_to "Confirm", booking_path(@booking, status: "confirm"), method: :patch, class: "bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg font-medium transition" %>
+      <!-- Pet Details -->
+      <div>
+        <p class="text-xs font-medium uppercase tracking-wide mb-3" style="color: #A89F91;">Pet Details</p>
+        <table class="w-full text-sm">
+          <tr>
+            <td class="py-1" style="color: #A89F91;">Name</td>
+            <td class="py-1 text-right font-medium" style="color: #3D2E1F;"><%= @booking.pet&.name %></td>
+          </tr>
+          <tr>
+            <td class="py-1" style="color: #A89F91;">Species</td>
+            <td class="py-1 text-right font-medium" style="color: #3D2E1F;"><%= @booking.pet&.species&.titleize %></td>
+          </tr>
+          <% if @booking.pet&.breed.present? %>
+            <tr>
+              <td class="py-1" style="color: #A89F91;">Breed</td>
+              <td class="py-1 text-right font-medium" style="color: #3D2E1F;"><%= @booking.pet&.breed %></td>
+            </tr>
+          <% end %>
+          <% if @booking.pet&.size.present? %>
+            <tr>
+              <td class="py-1" style="color: #A89F91;">Size</td>
+              <td class="py-1 text-right font-medium" style="color: #3D2E1F;"><%= @booking.pet&.size&.titleize %></td>
+            </tr>
+          <% end %>
+        </table>
+        
+        <% if @booking.pet&.notes.present? %>
+          <div class="mt-3 p-3" style="background: #FFF8E1;">
+            <p class="text-xs font-bold mb-1" style="color: #F57F17;">⚠ Special Notes</p>
+            <p class="text-xs" style="color: #3D2E1F;"><%= @booking.pet&.notes %></p>
+          </div>
+        <% end %>
+      </div>
+
+      <!-- History -->
+      <% past_bookings = @booking.pro_profile.bookings.where(customer: @booking.customer).where.not(id: @booking.id).completed.limit(3) %>
+      <% if past_bookings.any? %>
+        <div class="pt-6" style="border-top: 1px solid #E8E0D5;">
+          <p class="text-xs font-medium uppercase tracking-wide mb-3" style="color: #A89F91;">History (<%= past_bookings.count %>)</p>
+          <% past_bookings.each do |past| %>
+            <div class="flex items-center justify-between py-2">
+              <div>
+                <p class="text-sm font-medium" style="color: #3D2E1F;"><%= past.start_time.strftime("%b %d, %Y") %></p>
+                <p class="text-xs" style="color: #A89F91;"><%= past.service&.name %></p>
+              </div>
+              <span class="text-sm font-bold" style="color: #8B6F47;">€<%= past.total_price %></span>
+            </div>
+          <% end %>
+        </div>
       <% end %>
 
-      <% if @booking.confirmed? && @booking.pro_profile.user == Current.user %>
-        <%= button_to "Mark Complete", booking_path(@booking, status: "complete"), method: :patch, class: "bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg font-medium transition" %>
-      <% end %>
-
-      <% if @booking.active? %>
-        <%= button_to "Cancel", booking_path(@booking, status: "cancel"), method: :patch, data: { turbo_confirm: "Are you sure you want to cancel this booking?" }, class: "bg-red-100 hover:bg-red-200 text-red-700 px-4 py-2 rounded-lg font-medium transition" %>
-      <% end %>
-
-      <% if @booking.completed? && @booking.review.nil? && @booking.pet.user == Current.user %>
-        <%= link_to "Leave Review", new_booking_review_path(@booking), class: "bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-lg font-medium transition" %>
-      <% end %>
-
-      <%= link_to "Back to Dashboard", dashboard_path, class: "text-gray-600 hover:text-gray-800" %>
     </div>
   </div>
 </div>

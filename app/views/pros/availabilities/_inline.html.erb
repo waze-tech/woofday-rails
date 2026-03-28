@@ -1,0 +1,41 @@
+<%= turbo_frame_tag "pro_panel" do %><div style="min-height: 360px; font-family: 'Nunito', sans-serif; overflow: hidden;">
+  <div class="px-6 py-4" style="border-bottom: 1px solid #E8E0D5;">
+    <h2 class="text-lg font-bold" style="color: #3D2E1F;">Weekly Availability</h2>
+    <p class="text-sm mt-1" style="color: #A89F91;">Set the hours you're available each day</p>
+  </div>
+  
+  <div class="p-5">
+    <!-- Add Availability Form -->
+    <%= form_with model: @availability, url: pros_availabilities_path(inline: true), class: "flex flex-wrap items-center gap-3 mb-6 pb-6", style: "border-bottom: 1px solid #E8E0D5;" do |f| %>
+      <%= f.select :day_of_week, Availability::DAYS.map { |idx, day_name| [day_name, idx] }, {}, class: "px-3 py-2 text-sm font-medium", style: "border: 1px solid #E8E0D5; background: white; color: #3D2E1F;" %>
+      <%= f.select :start_time, (6..22).map { |h| ["%02d:00" % h, "%02d:00" % h] }, { selected: "09:00" }, class: "px-3 py-2 text-sm font-medium", style: "border: 1px solid #E8E0D5; background: white; color: #3D2E1F;" %>
+      <span class="text-sm" style="color: #A89F91;">to</span>
+      <%= f.select :end_time, (6..22).map { |h| ["%02d:00" % h, "%02d:00" % h] }, { selected: "17:00" }, class: "px-3 py-2 text-sm font-medium", style: "border: 1px solid #E8E0D5; background: white; color: #3D2E1F;" %>
+      <%= f.submit "Add", class: "px-4 py-2 text-sm font-bold cursor-pointer", style: "background: #8B6F47; color: white;" %>
+    <% end %>
+
+    <!-- Availability List by Day -->
+    <div>
+      <% Availability::DAYS.each do |index, day| %>
+        <% day_avails = @availabilities.select { |a| a.day_of_week == index } %>
+        <div class="flex items-center gap-4 py-3" style="border-bottom: 1px solid #F5F2ED;">
+          <span class="w-24 text-sm font-bold" style="color: #3D2E1F;"><%= day %></span>
+          <div class="flex-1 flex flex-wrap gap-2">
+            <% if day_avails.any? %>
+              <% day_avails.each do |avail| %>
+                <div class="inline-flex items-center gap-2 px-3 py-1 text-sm font-medium" style="background: #F5F2ED; color: #3D2E1F;">
+                  <%= avail.start_time.strftime("%H:%M") %> – <%= avail.end_time.strftime("%H:%M") %>
+                  <%= button_to pros_availability_path(avail), method: :delete, class: "ml-1 text-xs cursor-pointer", style: "color: #C62828;", data: { turbo_confirm: "Remove?" } do %>
+                    ✕
+                  <% end %>
+                </div>
+              <% end %>
+            <% else %>
+              <span class="text-sm italic" style="color: #A89F91;">Not available</span>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div><% end %>
