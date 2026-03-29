@@ -35,25 +35,146 @@
           style: "border-color: hsl(35, 20%, 88%);" %>
     </div>
 
+    <div class="grid grid-cols-2 gap-4">
+      <div>
+        <label class="block text-sm font-medium mb-1" style="color: hsl(25, 10%, 45%);">Age</label>
+        <%= f.text_field :age, 
+            placeholder: "e.g., 3 years, 6 months",
+            class: "w-full rounded-xl border px-4 py-3 text-sm focus:outline-none focus:ring-2",
+            style: "border-color: hsl(35, 20%, 88%);" %>
+      </div>
+      <div>
+        <label class="block text-sm font-medium mb-1" style="color: hsl(25, 10%, 45%);">Weight (kg)</label>
+        <%= f.number_field :weight_kg, 
+            min: 0, 
+            max: 100,
+            step: 0.5,
+            placeholder: "e.g., 15",
+            class: "w-full rounded-xl border px-4 py-3 text-sm focus:outline-none focus:ring-2",
+            style: "border-color: hsl(35, 20%, 88%);" %>
+      </div>
+    </div>
+
+    <!-- Auto-detected tags (shown after breed is entered) -->
+    <div id="detected-tags" class="hidden">
+      <label class="block text-sm font-medium mb-2" style="color: hsl(25, 10%, 45%);">Detected characteristics</label>
+      <div id="tags-container" class="flex flex-wrap gap-2 mb-2"></div>
+      <p class="text-xs" style="color: hsl(25, 10%, 55%);">Based on breed. You can adjust these below.</p>
+    </div>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div>
+        <label class="block text-sm font-medium mb-1" style="color: hsl(25, 10%, 45%);">Size</label>
+        <%= f.select :size, 
+            [["Small (<10kg)", "small"], ["Medium (10-25kg)", "medium"], ["Large (25-45kg)", "large"], ["Giant (>45kg)", "giant"]],
+            { prompt: "Auto-detect from breed/weight", include_blank: true },
+            class: "w-full rounded-xl border px-4 py-3 text-sm focus:outline-none focus:ring-2",
+            style: "border-color: hsl(35, 20%, 88%);" %>
+      </div>
+      <div>
+        <label class="block text-sm font-medium mb-1" style="color: hsl(25, 10%, 45%);">Temperament</label>
+        <%= f.select :temperament, 
+            [["Calm", "calm"], ["Anxious", "anxious"], ["Energetic", "energetic"], ["Nervous", "nervous"], ["Reactive", "reactive"]],
+            { prompt: "Select temperament", include_blank: true },
+            class: "w-full rounded-xl border px-4 py-3 text-sm focus:outline-none focus:ring-2",
+            style: "border-color: hsl(35, 20%, 88%);" %>
+      </div>
+    </div>
+
+    <!-- Special characteristics -->
     <div>
-      <label class="block text-sm font-medium mb-1" style="color: hsl(25, 10%, 45%);">Age (years)</label>
-      <%= f.number_field :age, 
-          min: 0, 
-          max: 30,
-          placeholder: "e.g., 3",
-          class: "w-full rounded-xl border px-4 py-3 text-sm focus:outline-none focus:ring-2",
+      <label class="block text-sm font-medium mb-2" style="color: hsl(25, 10%, 45%);">Special characteristics</label>
+      <div class="flex flex-wrap gap-3">
+        <label class="flex items-center gap-2 px-4 py-2 border rounded-xl cursor-pointer hover:border-pink-400 transition-all" style="border-color: hsl(35, 20%, 88%);">
+          <%= f.check_box :is_puppy, class: "rounded" %>
+          <span class="text-sm" style="color: hsl(20, 14%, 16%);">Puppy (under 1 year)</span>
+        </label>
+        <label class="flex items-center gap-2 px-4 py-2 border rounded-xl cursor-pointer hover:border-pink-400 transition-all" style="border-color: hsl(35, 20%, 88%);">
+          <%= f.check_box :is_senior, class: "rounded" %>
+          <span class="text-sm" style="color: hsl(20, 14%, 16%);">Senior dog</span>
+        </label>
+        <label class="flex items-center gap-2 px-4 py-2 border rounded-xl cursor-pointer hover:border-pink-400 transition-all" style="border-color: hsl(35, 20%, 88%);">
+          <%= f.check_box :has_special_needs, class: "rounded" %>
+          <span class="text-sm" style="color: hsl(20, 14%, 16%);">Special needs</span>
+        </label>
+      </div>
+    </div>
+
+    <div id="special-needs-details" class="<%= 'hidden' unless pet.has_special_needs? %>">
+      <label class="block text-sm font-medium mb-1" style="color: hsl(25, 10%, 45%);">Special needs details</label>
+      <%= f.text_area :special_needs_details, 
+          rows: 2,
+          placeholder: "e.g., Diabetes, mobility issues, anxiety medication...",
+          class: "w-full rounded-xl border px-4 py-3 text-sm focus:outline-none focus:ring-2 resize-none",
           style: "border-color: hsl(35, 20%, 88%);" %>
     </div>
 
     <div>
-      <label class="block text-sm font-medium mb-1" style="color: hsl(25, 10%, 45%);">Special notes</label>
+      <label class="block text-sm font-medium mb-1" style="color: hsl(25, 10%, 45%);">Additional notes</label>
       <%= f.text_area :notes, 
-          rows: 3,
-          placeholder: "Any allergies, medications, or special care instructions...",
+          rows: 2,
+          placeholder: "Any other information the groomer should know...",
           class: "w-full rounded-xl border px-4 py-3 text-sm focus:outline-none focus:ring-2 resize-none",
           style: "border-color: hsl(35, 20%, 88%);" %>
     </div>
   </div>
+
+  <script>
+    document.addEventListener('turbo:load', initPetForm);
+    document.addEventListener('DOMContentLoaded', initPetForm);
+    
+    function initPetForm() {
+      const breedField = document.querySelector('input[name="pet[breed]"]');
+      const sizeField = document.querySelector('select[name="pet[size]"]');
+      const tempField = document.querySelector('select[name="pet[temperament]"]');
+      const detectedTags = document.getElementById('detected-tags');
+      const tagsContainer = document.getElementById('tags-container');
+      const specialNeedsCheckbox = document.querySelector('input[name="pet[has_special_needs]"]');
+      const specialNeedsDetails = document.getElementById('special-needs-details');
+      
+      // Toggle special needs details
+      if (specialNeedsCheckbox && specialNeedsDetails) {
+        specialNeedsCheckbox.addEventListener('change', () => {
+          specialNeedsDetails.classList.toggle('hidden', !specialNeedsCheckbox.checked);
+        });
+      }
+      
+      // Auto-detect from breed (client-side preview)
+      if (breedField) {
+        breedField.addEventListener('blur', async () => {
+          const breed = breedField.value.trim();
+          if (!breed) {
+            detectedTags?.classList.add('hidden');
+            return;
+          }
+          
+          try {
+            const response = await fetch('/api/detect_breed?breed=' + encodeURIComponent(breed));
+            const data = await response.json();
+            
+            if (data.size || data.temperament_hints) {
+              if (tagsContainer) {
+                tagsContainer.innerHTML = '';
+                if (data.size) {
+                  tagsContainer.innerHTML += '<span class="px-3 py-1 text-xs rounded-full" style="background: #F0E6D8; color: #6B5B4F;">' + data.size.charAt(0).toUpperCase() + data.size.slice(1) + '</span>';
+                  if (!sizeField.value) sizeField.value = data.size;
+                }
+                if (data.temperament_hints) {
+                  data.temperament_hints.forEach(t => {
+                    tagsContainer.innerHTML += '<span class="px-3 py-1 text-xs rounded-full" style="background: #F0E6D8; color: #6B5B4F;">' + t.charAt(0).toUpperCase() + t.slice(1) + '</span>';
+                  });
+                  if (!tempField.value && data.temperament_hints[0]) tempField.value = data.temperament_hints[0];
+                }
+              }
+              detectedTags?.classList.remove('hidden');
+            }
+          } catch (e) {
+            console.log('Breed detection not available');
+          }
+        });
+      }
+    }
+  </script>
 
   <div class="flex items-center gap-4">
     <%= f.submit pet.persisted? ? "Save Changes" : "Add Pet", 

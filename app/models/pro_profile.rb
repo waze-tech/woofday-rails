@@ -13,6 +13,21 @@ class ProProfile < ApplicationRecord
   validates :slug, uniqueness: true, allow_blank: true
 
   before_save :generate_slug, if: -> { slug.blank? && business_name.present? }
+  before_save :normalize_array_fields
+
+  # Handle array params for dog_sizes and temperaments
+  def dog_sizes=(value)
+    super(value.is_a?(Array) ? value.reject(&:blank?).join(',') : value)
+  end
+
+  def temperaments=(value)
+    super(value.is_a?(Array) ? value.reject(&:blank?).join(',') : value)
+  end
+
+  def normalize_array_fields
+    self.dog_sizes = dog_sizes.to_s.split(',').map(&:strip).reject(&:blank?).join(',')
+    self.temperaments = temperaments.to_s.split(',').map(&:strip).reject(&:blank?).join(',')
+  end
 
   # Subscription tiers
   enum :subscription_tier, { free: "free", pro: "pro" }, default: :free, prefix: :tier

@@ -60,6 +60,11 @@ class Pros::SetupsController < ApplicationController
     end
 
     def profile_params
-      params.require(:pro_profile).permit(:business_name, :bio, :location, :phone, :email)
+      params.require(:pro_profile).permit(
+        :business_name, :bio, :location, :phone, :email,
+        :home_type, :has_garden, :smoking_home, :other_pets,
+        :accepts_puppies, :accepts_senior_dogs, :accepts_special_needs,
+        :breed_specialties, dog_sizes: [], temperaments: []
+      )
     end
 end

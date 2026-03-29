@@ -9,6 +9,7 @@ Rails.application.routes.draw do
   # API
   namespace :api do
     get "check_email", to: "validations#check_email"
+    get "detect_breed", to: "breed_detection#detect"
   end
 
   # OAuth

@@ -1,273 +1,438 @@
 <% content_for :head do %>
-  <meta property="og:title" content="<%= @pro_profile.business_name %> | woof.day" />
-  <meta property="og:description" content="<%= @pro_profile.bio.presence&.truncate(160) || "Pet care services in #{@pro_profile.location}" %>" />
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCPEd-Yx7RVOZVZ2KUdXH0yyeP3rdOjan0"></script>
+  <style>
+    #pro-profile-layout { display: flex !important; flex-direction: row !important; gap: 40px !important; flex-wrap: nowrap !important; }
+    #pro-sidebar { width: 224px !important; flex-shrink: 0 !important; }
+    #pro-main { flex: 1 !important; min-width: 0 !important; }
+  </style>
 <% end %>
 
-<div style="font-family: 'Nunito', sans-serif; background: #FAFAF8; min-height: 100vh;">
-  
-  <!-- Photo Gallery Header -->
-  <div style="background: white;">
-    <div class="mx-auto max-w-5xl">
-      <div class="grid grid-cols-4 gap-1 sm:gap-2 h-64 sm:h-80">
-        <!-- Main Photo -->
-        <div class="col-span-2 row-span-2 relative">
-          <% if @pro_profile.portfolio_photos.any? && @pro_profile.portfolio_photos.first.image.attached? %>
-            <%= image_tag @pro_profile.portfolio_photos.first.image, class: "w-full h-full object-cover", style: "border-radius: 0 0 0 12px;" %>
-          <% else %>
-            <div class="w-full h-full flex items-center justify-center text-7xl font-bold" style="background: linear-gradient(135deg, #E8E0D5, #D4C8B8); color: #8B6F47; border-radius: 0 0 0 12px;">
-              <%= @pro_profile.business_name[0].upcase %>
-            </div>
-          <% end %>
-        </div>
-        <!-- Secondary Photos (or placeholders with pets) -->
-        <div class="col-span-1 relative overflow-hidden">
-          <div class="w-full h-full flex items-center justify-center" style="background: linear-gradient(135deg, rgba(139, 111, 71, 0.08), rgba(139, 111, 71, 0.03));">
-            <span class="text-4xl">🐕</span>
-          </div>
-        </div>
-        <div class="col-span-1 relative overflow-hidden" style="border-radius: 0 0 12px 0;">
-          <div class="w-full h-full flex items-center justify-center" style="background: linear-gradient(135deg, rgba(139, 111, 71, 0.06), rgba(139, 111, 71, 0.02));">
-            <span class="text-4xl">🐈</span>
-          </div>
-        </div>
-        <div class="col-span-1 relative overflow-hidden">
-          <div class="w-full h-full flex items-center justify-center" style="background: linear-gradient(135deg, rgba(139, 111, 71, 0.05), rgba(139, 111, 71, 0.02));">
-            <span class="text-4xl">🦮</span>
-          </div>
-        </div>
-        <div class="col-span-1 relative overflow-hidden">
-          <div class="w-full h-full flex items-center justify-center" style="background: linear-gradient(135deg, rgba(139, 111, 71, 0.04), rgba(139, 111, 71, 0.01));">
-            <span class="text-4xl">🐾</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="mx-auto max-w-5xl px-4 py-8 sm:px-6">
-    
-    <!-- Back Link -->
-    <%= link_to search_path, class: "inline-flex items-center gap-2 text-sm font-medium mb-6 transition-colors", style: "color: rgba(61, 46, 31, 0.5);" do %>
-      <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"/></svg>
-      Back to search
-    <% end %>
-    
-    <div class="grid gap-8 lg:grid-cols-3">
+<div style="font-family: 'Nunito', sans-serif; background: white;">
+  <div style="max-width: 1152px; margin: 0 auto; padding: 24px 16px;">
+    <div id="pro-profile-layout" style="display:flex!important;flex-direction:row!important;gap:40px!important">
       
-      <!-- Main Content -->
-      <div class="lg:col-span-2 space-y-8">
-        
-        <!-- Profile Header -->
-        <div>
-          <div class="flex items-start gap-4 mb-4">
-            <h1 class="text-3xl font-extrabold" style="color: #3D2E1F;"><%= @pro_profile.business_name %></h1>
-            <% if @pro_profile.is_verified %>
-              <span class="inline-flex items-center gap-1 px-2 py-1 rounded-md text-xs font-bold" style="background: rgba(34, 197, 94, 0.1); color: rgb(22, 163, 74);">
-                <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd"/></svg>
-                Verified
-              </span>
-            <% end %>
-          </div>
+      <!-- LEFT SIDEBAR -->
+      <div id="pro-sidebar" style="width:224px!important;flex-shrink:0!important">
+        <div class="sticky top-6">
           
-          <!-- Rating & Location -->
-          <div class="flex flex-wrap items-center gap-4 mb-4">
-            <% if @pro_profile.reviews.any? %>
-              <div class="flex items-center gap-1">
-                <svg class="w-5 h-5" fill="#F59E0B" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                <span class="font-bold" style="color: #3D2E1F;"><%= number_with_precision(@pro_profile.average_rating, precision: 1) %></span>
-                <span class="text-sm" style="color: rgba(61, 46, 31, 0.5);">· <%= @pro_profile.reviews.count %> reviews</span>
-              </div>
-            <% end %>
-            <% if @pro_profile.location.present? %>
-              <span class="text-sm" style="color: rgba(61, 46, 31, 0.6);"><%= @pro_profile.location %></span>
-            <% end %>
-          </div>
-          
-          <!-- Tagline/Bio Preview -->
-          <% if @pro_profile.bio.present? %>
-            <p class="text-lg leading-relaxed" style="color: rgba(61, 46, 31, 0.8);"><%= @pro_profile.bio.truncate(200) %></p>
-          <% end %>
-        </div>
-
-        <!-- Services & Pricing -->
-        <% if @pro_profile.services.any? %>
-          <div>
-            <h2 class="text-xl font-bold mb-4" style="color: #3D2E1F;">Services</h2>
-            <div class="space-y-3">
-              <% @pro_profile.services.each do |service| %>
-                <div class="flex items-center justify-between p-4 rounded-xl" style="background: white; box-shadow: 0 1px 3px rgba(0,0,0,0.04);">
-                  <div class="flex items-center gap-4">
-                    <% if service.photo.attached? %>
-                      <%= image_tag service.photo, class: "w-12 h-12 rounded-lg object-cover" %>
-                    <% elsif service.photo_url.present? %>
-                      <%= image_tag service.photo_url, class: "w-12 h-12 rounded-lg object-cover" %>
-                    <% else %>
-                      <div class="w-12 h-12 rounded-lg flex items-center justify-center" style="background: rgba(139, 111, 71, 0.06);">
-                        <svg class="w-5 h-5" fill="none" stroke="rgba(139, 111, 71, 0.4)" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.568 3H5.25A2.25 2.25 0 003 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 005.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 009.568 3z"/></svg>
-                      </div>
-                    <% end %>
-                    <div>
-                      <p class="font-bold" style="color: #3D2E1F;"><%= service.name %></p>
-                      <% if service.duration.present? %>
-                        <p class="text-sm" style="color: rgba(61, 46, 31, 0.5);"><%= service.duration %></p>
-                      <% end %>
-                    </div>
-                  </div>
-                  <div class="text-right">
-                    <p class="text-xl font-bold" style="color: #8B6F47;"><%= service.formatted_price %></p>
-                    <p class="text-xs" style="color: rgba(61, 46, 31, 0.4);"><%= service.payment_type_label %></p>
-                  </div>
+          <!-- Profile Photo -->
+          <div class="flex justify-center mb-3">
+            <% sidebar_photo = @pro_profile.portfolio_photos.order(:sort_order).first %>
+            <div class="w-20 h-20 rounded-full overflow-hidden" style="border: 2px solid #E5E5E5;">
+              <% if sidebar_photo&.url.present? %>
+                <img src="<%= sidebar_photo.url %>" alt="" class="w-full h-full object-cover">
+              <% elsif sidebar_photo&.image&.attached? %>
+                <%= image_tag sidebar_photo.image, class: "w-full h-full object-cover" %>
+              <% else %>
+                <div class="w-full h-full flex items-center justify-center text-2xl font-semibold" style="background: #F5F5F5; color: #666;">
+                  <%= @pro_profile.business_name[0].upcase %>
                 </div>
               <% end %>
             </div>
           </div>
-        <% end %>
-
-        <!-- About Section -->
-        <% if @pro_profile.bio.present? && @pro_profile.bio.length > 200 %>
-          <div>
-            <h2 class="text-xl font-bold mb-4" style="color: #3D2E1F;">About <%= @pro_profile.business_name.split.first %></h2>
-            <div class="p-5 rounded-xl" style="background: white; box-shadow: 0 1px 3px rgba(0,0,0,0.04);">
-              <p class="leading-relaxed" style="color: rgba(61, 46, 31, 0.8);"><%= simple_format(@pro_profile.bio) %></p>
+          
+          <!-- Name -->
+          <h1 class="font-heading text-lg font-semibold mb-0.5 text-center" style="color: #333;"><%= @pro_profile.business_name %></h1>
+          <p class="text-sm text-center" style="color: #666;"><%= @pro_profile.location %></p>
+          
+          <!-- Aggregate Rating -->
+          <% if @pro_profile.reviews.any? %>
+            <% avg_rating = @pro_profile.reviews.average(:rating).to_f.round(1) %>
+            <div class="flex items-center justify-center gap-1.5 mt-1">
+              <div class="flex gap-0.5">
+                <% 5.times do |i| %>
+                  <% fill_percent = [[avg_rating - i, 1].min, 0].max * 100 %>
+                  <div class="relative w-4 h-4">
+                    <svg class="w-4 h-4 absolute" fill="#E5E5E5" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                    <div class="absolute inset-0 overflow-hidden" style="width: <%= fill_percent %>%;">
+                      <svg class="w-4 h-4" fill="#8B6F47" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                    </div>
+                  </div>
+                <% end %>
+              </div>
+              <span class="text-sm font-semibold" style="color: #333;"><%= avg_rating %></span>
+              <span class="text-sm" style="color: #666;">(<%= @pro_profile.reviews.count %>)</span>
             </div>
+          <% end %>
+          
+          <!-- Stats - Social Proof -->
+          <% completed_bookings = @pro_profile.bookings.where(status: 'completed').count %>
+          <% unique_pets = @pro_profile.bookings.where(status: 'completed').distinct.count(:pet_id) %>
+          <% repeat_customers = @pro_profile.bookings.where(status: 'completed').group(:customer_id).having('count(*) > 1').count.keys.length %>
+          
+          <div class="mt-4 p-3 rounded-lg" style="background: #FAF8F5;">
+            <div class="grid grid-cols-2 gap-3 text-center">
+              <div>
+                <p class="text-lg font-bold" style="color: #8B6F47;"><%= completed_bookings %></p>
+                <p class="text-xs" style="color: #666;">Pups pampered</p>
+              </div>
+              <div>
+                <p class="text-lg font-bold" style="color: #8B6F47;"><%= repeat_customers %></p>
+                <p class="text-xs" style="color: #666;">Tail waggers</p>
+              </div>
+            </div>
+            <% if unique_pets > 0 %>
+              <p class="text-xs text-center mt-2" style="color: #888;">
+                <span style="color: #8B6F47;">🐾</span> <%= unique_pets %> happy snout<%= unique_pets != 1 ? 's' : '' %> served
+              </p>
+            <% end %>
           </div>
-        <% end %>
-
-        <!-- What to expect -->
-        <div>
-          <h2 class="text-xl font-bold mb-4" style="color: #3D2E1F;">What your pet can expect</h2>
-          <div class="grid grid-cols-2 gap-3">
-            <div class="flex items-center gap-3 p-4 rounded-xl" style="background: white; box-shadow: 0 1px 3px rgba(0,0,0,0.04);">
-              <span class="text-2xl">🏠</span>
-              <span class="text-sm font-medium" style="color: rgba(61, 46, 31, 0.8);">Home environment</span>
-            </div>
-            <div class="flex items-center gap-3 p-4 rounded-xl" style="background: white; box-shadow: 0 1px 3px rgba(0,0,0,0.04);">
-              <span class="text-2xl">📸</span>
-              <span class="text-sm font-medium" style="color: rgba(61, 46, 31, 0.8);">Photo updates</span>
-            </div>
-            <div class="flex items-center gap-3 p-4 rounded-xl" style="background: white; box-shadow: 0 1px 3px rgba(0,0,0,0.04);">
-              <span class="text-2xl">💊</span>
-              <span class="text-sm font-medium" style="color: rgba(61, 46, 31, 0.8);">Can give medication</span>
-            </div>
-            <div class="flex items-center gap-3 p-4 rounded-xl" style="background: white; box-shadow: 0 1px 3px rgba(0,0,0,0.04);">
-              <span class="text-2xl">🚗</span>
-              <span class="text-sm font-medium" style="color: rgba(61, 46, 31, 0.8);">Pick-up available</span>
-            </div>
+          
+          <!-- Contact Button -->
+          <div class="mt-4 mb-2">
+            <% if authenticated? && Current.user.pets.any? %>
+              <%= link_to new_pro_profile_booking_path(@pro_profile), class: "block w-full py-2.5 rounded-lg text-center font-semibold text-sm", style: "background: #8B6F47; color: white;" do %>
+                Book Now
+              <% end %>
+            <% elsif authenticated? %>
+              <%= link_to "Add Your Pet", new_pet_path, class: "block w-full py-2.5 rounded-lg text-center font-semibold text-sm", style: "background: #8B6F47; color: white;" %>
+            <% else %>
+              <%= link_to "Sign In to Book", new_session_path, class: "block w-full py-2.5 rounded-lg text-center font-semibold text-sm", style: "background: #8B6F47; color: white;" %>
+            <% end %>
           </div>
+          
+          <%= link_to "See more groomers", search_path, class: "text-sm", style: "color: #8B6F47;" %>
+          
+          <!-- Services -->
+          <% if @pro_profile.services.any? %>
+            <div class="mt-6 pt-6" style="border-top: 1px solid #EBEBEB;">
+              <h3 class="font-semibold text-sm mb-3" style="color: #333;">Services</h3>
+              <div class="space-y-2">
+                <% @pro_profile.services.each do |service| %>
+                  <% service_bookings = @pro_profile.bookings.where(service: service, status: 'completed') %>
+                  <% service_reviews = Review.joins(:booking).where(bookings: { service_id: service.id, pro_profile_id: @pro_profile.id }) %>
+                  <% repeat_customers = service_bookings.group(:customer_id).having('count(*) > 1').count.keys.length %>
+                  <% 
+                    # Service image mapping - cute dog photos for each service type
+                    service_image = case service.name.downcase
+                    when /groom/ then "https://images.unsplash.com/photo-1516734212186-a967f81ad0d7?w=100&h=100&fit=crop"
+                    when /walk/ then "https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=100&h=100&fit=crop"
+                    when /sit/ then "https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=100&h=100&fit=crop"
+                    when /train/ then "https://images.unsplash.com/photo-1558929996-da64ba858215?w=100&h=100&fit=crop"
+                    when /styl/ then "https://images.unsplash.com/photo-1583337130417-3346a1be7dee?w=100&h=100&fit=crop"
+                    when /bath/ then "https://images.unsplash.com/photo-1581888227599-779811939961?w=100&h=100&fit=crop"
+                    when /nail|trim/ then "https://images.unsplash.com/photo-1535294435445-d7249524ef2e?w=100&h=100&fit=crop"
+                    else "https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=100&h=100&fit=crop"
+                    end
+                  %>
+                  <div class="service-row" style="position: relative; cursor: pointer; padding: 8px; margin: 0 -8px; border-radius: 8px; transition: background 0.2s;" onmouseover="this.style.background='#F9F9F9'; this.querySelector('.service-popout').style.opacity='1'; this.querySelector('.service-popout').style.visibility='visible';" onmouseout="this.style.background='transparent'; this.querySelector('.service-popout').style.opacity='0'; this.querySelector('.service-popout').style.visibility='hidden';">
+                    <div class="flex items-start gap-3">
+                      <img src="<%= service_image %>" alt="" class="w-8 h-8 rounded-md object-cover flex-shrink-0">
+                      <div class="flex-1 flex justify-between items-center">
+                        <p class="text-sm font-medium" style="color: #333;"><%= service.name %></p>
+                        <p class="text-sm font-semibold" style="color: #333;"><%= service.formatted_price %></p>
+                      </div>
+                    </div>
+                    
+                    <!-- Hover Popout -->
+                    <div class="service-popout" style="position: absolute; left: 100%; top: 0; margin-left: 8px; width: 224px; padding: 16px; background: #FFFFFF; border-radius: 8px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); border: 1px solid #DDD; opacity: 0; visibility: hidden; transition: all 0.2s; z-index: 50;">
+                      <h4 class="font-semibold text-sm mb-3" style="color: #333;"><%= service.name %></h4>
+                      
+                      <div class="space-y-2 mb-4 text-xs" style="color: #555;">
+                        <div class="flex justify-between">
+                          <span>Completed bookings</span>
+                          <span class="font-semibold" style="color: #333;"><%= service_bookings.count %></span>
+                        </div>
+                        <div class="flex justify-between">
+                          <span>Repeat customers</span>
+                          <span class="font-semibold" style="color: #333;"><%= repeat_customers %></span>
+                        </div>
+                        <div class="flex justify-between">
+                          <span>Reviews</span>
+                          <span class="font-semibold" style="color: #333;"><%= service_reviews.count %></span>
+                        </div>
+                        <% if service_reviews.any? %>
+                          <div class="flex justify-between items-center">
+                            <span>Avg rating</span>
+                            <div class="flex items-center gap-1">
+                              <svg class="w-3 h-3" fill="#8B6F47" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                              <span class="font-semibold" style="color: #333;"><%= service_reviews.average(:rating).to_f.round(1) %></span>
+                            </div>
+                          </div>
+                        <% end %>
+                      </div>
+                      
+                      <% if authenticated? && Current.user.pets.any? %>
+                        <%= link_to new_pro_profile_booking_path(@pro_profile, service_id: service.id), class: "block w-full py-2 rounded-lg text-center font-semibold text-xs", style: "background: #8B6F47; color: white;" do %>
+                          Book <%= service.name %>
+                        <% end %>
+                      <% else %>
+                        <%= link_to "Sign in to book", new_session_path, class: "block w-full py-2 rounded-lg text-center font-semibold text-xs", style: "background: #8B6F47; color: white;" %>
+                      <% end %>
+                    </div>
+                  </div>
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+          
+          <!-- Availability -->
+          <div class="mt-6 pt-6" style="border-top: 1px solid #EBEBEB;">
+            <h3 class="font-semibold text-sm mb-3" style="color: #333;">Availability</h3>
+            
+            <div class="flex items-center justify-between mb-3">
+              <button id="prev-month" style="color: #666;">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7"/></svg>
+              </button>
+              <span id="calendar-month" class="text-sm font-semibold" style="color: #333;"></span>
+              <button id="next-month" style="color: #666;">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg>
+              </button>
+            </div>
+            
+            <div class="flex gap-3 text-xs mb-2" style="color: #999;">
+              <span class="flex items-center gap-1">
+                <span class="w-2 h-2 rounded-full" style="background: #8B6F47;"></span> Available
+              </span>
+              <span class="flex items-center gap-1">
+                <span class="w-2 h-2 rounded-full" style="background: #E5E5E5;"></span> Not available
+              </span>
+            </div>
+            
+            <table class="w-full text-center text-xs" style="table-layout: fixed;">
+              <thead>
+                <tr style="color: #999;">
+                  <th class="py-1 font-normal">M</th>
+                  <th class="py-1 font-normal">T</th>
+                  <th class="py-1 font-normal">W</th>
+                  <th class="py-1 font-normal">T</th>
+                  <th class="py-1 font-normal">F</th>
+                  <th class="py-1 font-normal">S</th>
+                  <th class="py-1 font-normal">S</th>
+                </tr>
+              </thead>
+              <tbody id="calendar-days"></tbody>
+            </table>
+          </div>
+          
+        </div>
+      </div>
+      
+      <!-- RIGHT MAIN CONTENT -->
+      <div id="pro-main" style="flex:1!important;min-width:0!important">
+        
+        <!-- Photos -->
+        <% photos = @pro_profile.portfolio_photos.order(:sort_order) %>
+        <div class="flex gap-1 mb-6 rounded-lg overflow-hidden" style="height: 200px;">
+          <div style="flex: 2;">
+            <% if photos.any? %>
+              <% first = photos.first %>
+              <% if first.url.present? %>
+                <img src="<%= first.url %>" alt="" class="w-full h-full object-cover">
+              <% elsif first.image.attached? %>
+                <%= image_tag first.image, class: "w-full h-full object-cover" %>
+              <% end %>
+            <% else %>
+              <div class="w-full h-full flex items-center justify-center" style="background: linear-gradient(135deg, #E8E0D5, #D4C4B0);">
+                <span class="text-5xl font-bold" style="color: #8B6F47;"><%= @pro_profile.business_name[0].upcase %></span>
+              </div>
+            <% end %>
+          </div>
+          <div style="flex: 1; display: flex; flex-direction: column; gap: 1px;">
+            <% 2.times do |i| %>
+              <div style="flex: 1;">
+                <% photo = photos[i + 1] %>
+                <% if photo&.url.present? %>
+                  <img src="<%= photo.url %>" alt="" class="w-full h-full object-cover">
+                <% elsif photo&.image&.attached? %>
+                  <%= image_tag photo.image, class: "w-full h-full object-cover" %>
+                <% else %>
+                  <div class="w-full h-full" style="background: #EBEBEB;"></div>
+                <% end %>
+              </div>
+            <% end %>
+          </div>
+        </div>
+
+        <!-- Title -->
+        <h2 class="text-xl font-semibold mb-4" style="color: #333;">
+          Pet Grooming & Styling in <%= @pro_profile.location.presence || 'Dublin' %>
+          <% if @pro_profile.is_verified %>
+            <svg class="w-5 h-5 inline ml-1" fill="#8B6F47" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd"/></svg>
+          <% end %>
+        </h2>
+        
+        <!-- About & Specialties -->
+        <div class="mb-6 pb-6" style="border-bottom: 1px solid #EBEBEB;">
+          <h3 class="font-heading text-base font-semibold mb-3" style="color: #333;">About <%= @pro_profile.business_name.split.first %></h3>
+          
+          <% if @pro_profile.bio.present? %>
+            <p class="text-sm leading-relaxed mb-4" style="color: #444;"><%= @pro_profile.bio.truncate(400) %></p>
+          <% end %>
+          
+          <!-- Specialties -->
+          <% has_specialties = @pro_profile.dog_sizes.present? || @pro_profile.temperaments.present? || @pro_profile.breed_specialties.present? || @pro_profile.accepts_puppies? || @pro_profile.accepts_senior_dogs? || @pro_profile.accepts_special_needs? %>
+          <% if has_specialties %>
+            <h4 class="text-sm font-semibold mb-3" style="color: #333;">Specialties</h4>
+            <div class="flex flex-wrap gap-2 mb-3">
+              <% if @pro_profile.dog_sizes.present? %>
+                <% @pro_profile.dog_sizes.split(',').each do |size| %>
+                  <span class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs border" style="border-color: #DDD; color: #333; border-radius: 4px;">
+                    <img src="https://cdn-icons-png.flaticon.com/512/616/616554.png" alt="" class="w-3.5 h-3.5 opacity-60">
+                    <%= size.strip.titleize %> dogs
+                  </span>
+                <% end %>
+              <% end %>
+              <% if @pro_profile.temperaments.present? %>
+                <% @pro_profile.temperaments.split(',').each do |temp| %>
+                  <span class="px-3 py-1.5 text-xs border" style="border-color: #DDD; color: #333; border-radius: 4px;"><%= temp.strip.titleize %></span>
+                <% end %>
+              <% end %>
+              <% if @pro_profile.accepts_puppies? %>
+                <span class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs border" style="border-color: #DDD; color: #333; border-radius: 4px;">
+                  <img src="https://cdn-icons-png.flaticon.com/512/1818/1818435.png" alt="" class="w-3.5 h-3.5 opacity-60">
+                  Puppies welcome
+                </span>
+              <% end %>
+              <% if @pro_profile.accepts_senior_dogs? %>
+                <span class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs border" style="border-color: #DDD; color: #333; border-radius: 4px;">
+                  <img src="https://cdn-icons-png.flaticon.com/512/3047/3047928.png" alt="" class="w-3.5 h-3.5 opacity-60">
+                  Senior dogs
+                </span>
+              <% end %>
+              <% if @pro_profile.accepts_special_needs? %>
+                <span class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs border" style="border-color: #DDD; color: #333; border-radius: 4px;">
+                  <img src="https://cdn-icons-png.flaticon.com/512/2966/2966327.png" alt="" class="w-3.5 h-3.5 opacity-60">
+                  Special needs
+                </span>
+              <% end %>
+            </div>
+            <% if @pro_profile.breed_specialties.present? %>
+              <p class="text-sm" style="color: #555;"><span style="color: #333;">Breed experience:</span> <%= @pro_profile.breed_specialties %></p>
+            <% end %>
+          <% end %>
         </div>
 
         <!-- Reviews -->
-        <div>
-          <div class="flex items-center justify-between mb-4">
-            <h2 class="text-xl font-bold" style="color: #3D2E1F;">Reviews</h2>
-            <% if @pro_profile.reviews.any? %>
-              <span class="text-sm font-medium" style="color: rgba(61, 46, 31, 0.5);"><%= @pro_profile.reviews.count %> reviews</span>
-            <% end %>
-          </div>
+        <div class="mb-6 pb-6" style="border-bottom: 1px solid #EBEBEB;">
+          <h3 class="font-semibold text-sm mb-3" style="color: #333;">Reviews</h3>
           
           <% if @reviews.empty? %>
-            <div class="p-8 rounded-xl text-center" style="background: white; box-shadow: 0 1px 3px rgba(0,0,0,0.04);">
-              <span class="text-4xl mb-3 block">⭐</span>
-              <p class="font-semibold" style="color: #3D2E1F;">No reviews yet</p>
-              <p class="text-sm mt-1" style="color: rgba(61, 46, 31, 0.5);">Be the first pet parent to leave a review</p>
-            </div>
+            <p class="text-sm" style="color: #666;">No reviews yet.</p>
           <% else %>
-            <div class="space-y-4">
-              <% @reviews.each do |review| %>
-                <div class="p-5 rounded-xl" style="background: white; box-shadow: 0 1px 3px rgba(0,0,0,0.04);">
-                  <div class="flex items-start gap-3">
-                    <div class="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold" style="background: linear-gradient(135deg, #E8E0D5, #D4C8B8); color: #8B6F47;">
-                      <%= review.reviewer&.email_address&.first&.upcase || 'P' %>
-                    </div>
-                    <div class="flex-1">
-                      <div class="flex items-center justify-between mb-1">
-                        <span class="font-bold" style="color: #3D2E1F;"><%= review.reviewer&.email_address&.split('@')&.first&.titleize || 'Pet Parent' %></span>
-                        <span class="text-xs" style="color: rgba(61, 46, 31, 0.4);"><%= time_ago_in_words(review.created_at) %> ago</span>
-                      </div>
-                      <div class="flex gap-0.5 mb-2">
-                        <% review.rating.times do %>
-                          <svg class="w-4 h-4" fill="#F59E0B" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                        <% end %>
-                      </div>
-                      <% if review.content.present? %>
-                        <p class="text-sm leading-relaxed" style="color: rgba(61, 46, 31, 0.8);"><%= review.content %></p>
-                      <% end %>
-                    </div>
-                  </div>
+            <% @reviews.first(2).each do |review| %>
+              <div class="mb-4">
+                <div class="flex items-center gap-2 mb-1">
+                  <span class="font-semibold text-sm" style="color: #333;"><%= review.reviewer&.email_address&.split('@')&.first&.titleize || 'Pet Parent' %></span>
+                  <span class="text-xs" style="color: #999;"><%= review.created_at.strftime("%b %d, %Y") %></span>
                 </div>
-              <% end %>
-            </div>
-          <% end %>
-        </div>
-        
-      </div>
-      
-      <!-- Sidebar -->
-      <div class="space-y-6">
-        
-        <!-- Booking Card (sticky) -->
-        <div class="rounded-2xl p-6 lg:sticky lg:top-6" style="background: white; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
-          
-          <% if @pro_profile.services.any? %>
-            <div class="flex items-baseline gap-1 mb-1">
-              <span class="text-3xl font-extrabold" style="color: #3D2E1F;"><%= @pro_profile.services.minimum(:price) ? number_to_currency(@pro_profile.services.minimum(:price), unit: "€") : "€--" %></span>
-            </div>
-            <p class="text-sm mb-5" style="color: rgba(61, 46, 31, 0.5);">starting price</p>
-          <% end %>
-          
-          <% if authenticated? && Current.user.pets.any? %>
-            <%= link_to new_pro_profile_booking_path(@pro_profile), class: "block w-full py-3.5 rounded-xl text-center font-bold transition-all", style: "background: #8B6F47; color: white;" do %>
-              Contact <%= @pro_profile.business_name.split.first %>
-            <% end %>
-          <% elsif authenticated? %>
-            <p class="text-sm text-center mb-3" style="color: rgba(61, 46, 31, 0.6);">
-              Add your pet to get started
-            </p>
-            <%= link_to "Add Your Pet", new_pet_path, class: "block w-full py-3.5 rounded-xl text-center font-bold transition-all", style: "background: #8B6F47; color: white;" %>
-          <% else %>
-            <%= link_to "Sign In to Book", new_session_path, class: "block w-full py-3.5 rounded-xl text-center font-bold transition-all", style: "background: #8B6F47; color: white;" %>
-          <% end %>
-          
-          <p class="text-xs text-center mt-4" style="color: rgba(61, 46, 31, 0.4);">
-            Usually responds within a few hours
-          </p>
-          
-          <div class="mt-5 pt-5" style="border-top: 1px solid rgba(139, 111, 71, 0.08);">
-            <div class="flex items-center gap-3 mb-3">
-              <svg class="w-5 h-5" fill="none" stroke="rgba(139, 111, 71, 0.5)" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/></svg>
-              <span class="text-sm" style="color: rgba(61, 46, 31, 0.7);">Secure booking</span>
-            </div>
-            <div class="flex items-center gap-3">
-              <svg class="w-5 h-5" fill="none" stroke="rgba(139, 111, 71, 0.5)" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z"/></svg>
-              <span class="text-sm" style="color: rgba(61, 46, 31, 0.7);">Direct messaging</span>
-            </div>
-          </div>
-        </div>
-        
-        <!-- Quick Facts -->
-        <div class="rounded-xl p-5" style="background: white; box-shadow: 0 1px 3px rgba(0,0,0,0.04);">
-          <h3 class="font-bold mb-4" style="color: #3D2E1F;"><%= @pro_profile.business_name.split.first %>'s Info</h3>
-          <div class="space-y-3 text-sm">
-            <% if @pro_profile.service_radius_km.present? %>
-              <div class="flex justify-between">
-                <span style="color: rgba(61, 46, 31, 0.5);">Service area</span>
-                <span class="font-medium" style="color: #3D2E1F;"><%= @pro_profile.service_radius_km %>km radius</span>
+                <div class="flex gap-0.5 mb-1">
+                  <% 5.times do |i| %>
+                    <svg class="w-3 h-3" fill="<%= i < review.rating ? '#8B6F47' : '#E5E5E5' %>" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                  <% end %>
+                </div>
+                <% if review.comment.present? %>
+                  <p class="text-sm" style="color: #444;"><%= review.comment.truncate(150) %></p>
+                  <% if review.comment.length > 150 %>
+                    <button class="text-sm" style="color: #8B6F47;">Read more</button>
+                  <% end %>
+                <% end %>
               </div>
             <% end %>
-            <div class="flex justify-between">
-              <span style="color: rgba(61, 46, 31, 0.5);">Member since</span>
-              <span class="font-medium" style="color: #3D2E1F;"><%= @pro_profile.created_at.strftime("%b %Y") %></span>
-            </div>
-            <% if @pro_profile.bookings.completed.count > 0 %>
-              <div class="flex justify-between">
-                <span style="color: rgba(61, 46, 31, 0.5);">Completed bookings</span>
-                <span class="font-medium" style="color: #3D2E1F;"><%= @pro_profile.bookings.completed.count %></span>
-              </div>
+            <% if @reviews.count > 2 %>
+              <button class="text-sm font-semibold" style="color: #8B6F47;">Read more reviews</button>
             <% end %>
-          </div>
+          <% end %>
         </div>
+
+        
+
+        <!-- Location -->
+        <% if @pro_profile.latitude.present? && @pro_profile.longitude.present? %>
+          <div>
+            <h3 class="font-semibold text-sm mb-1" style="color: #333;">Location</h3>
+            <p class="text-sm mb-3" style="color: #666;"><%= @pro_profile.location %></p>
+            <div id="profile-map" class="rounded-lg" style="height: 180px; background: #F0F0F0;"></div>
+          </div>
+        <% end %>
 
       </div>
     </div>
   </div>
 </div>
+
+<script>
+function initProfilePage() {
+  const calendarDays = document.getElementById('calendar-days');
+  const calendarMonth = document.getElementById('calendar-month');
+  if (!calendarDays) return;
+  
+  let currentDate = new Date();
+  
+  function renderCalendar(date) {
+    const year = date.getFullYear();
+    const month = date.getMonth();
+    const today = new Date();
+    today.setHours(0,0,0,0);
+    
+    calendarMonth.textContent = date.toLocaleDateString('en-IE', { month: 'long', year: 'numeric' });
+    
+    let firstDay = new Date(year, month, 1).getDay();
+    firstDay = firstDay === 0 ? 6 : firstDay - 1;
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    
+    let cells = [];
+    for (let i = 0; i < firstDay; i++) cells.push('');
+    
+    for (let day = 1; day <= daysInMonth; day++) {
+      const thisDate = new Date(year, month, day);
+      const isPast = thisDate < today;
+      const isAvailable = !isPast && Math.random() > 0.3;
+      
+      if (isPast) {
+        cells.push('<span style="color: #CCC;">' + day + '</span>');
+      } else if (isAvailable) {
+        cells.push('<span class="font-semibold" style="color: #8B6F47;">' + day + '</span>');
+      } else {
+        cells.push('<span style="color: #999;">' + day + '</span>');
+      }
+    }
+    
+    let html = '';
+    for (let i = 0; i < cells.length; i += 7) {
+      html += '<tr>';
+      for (let j = 0; j < 7; j++) {
+        html += '<td class="py-1">' + (cells[i + j] || '') + '</td>';
+      }
+      html += '</tr>';
+    }
+    
+    calendarDays.innerHTML = html;
+  }
+  
+  renderCalendar(currentDate);
+  
+  document.getElementById('prev-month')?.addEventListener('click', () => {
+    currentDate.setMonth(currentDate.getMonth() - 1);
+    renderCalendar(currentDate);
+  });
+  
+  document.getElementById('next-month')?.addEventListener('click', () => {
+    currentDate.setMonth(currentDate.getMonth() + 1);
+    renderCalendar(currentDate);
+  });
+  
+  const mapElement = document.getElementById('profile-map');
+  if (mapElement && typeof google !== 'undefined') {
+    const lat = <%= @pro_profile.latitude || 53.3498 %>;
+    const lng = <%= @pro_profile.longitude || -6.2603 %>;
+    
+    const map = new google.maps.Map(mapElement, {
+      center: { lat, lng },
+      zoom: 14,
+      disableDefaultUI: true,
+      zoomControl: true,
+      styles: [{ featureType: "poi", stylers: [{ visibility: "off" }] }]
+    });
+    
+    new google.maps.Circle({
+      map, center: { lat, lng }, radius: 300,
+      fillColor: '#8B6F47', fillOpacity: 0.08,
+      strokeColor: '#8B6F47', strokeOpacity: 0.15, strokeWeight: 1
+    });
+  }
+}
+
+document.addEventListener('turbo:load', initProfilePage);
+document.addEventListener('DOMContentLoaded', initProfilePage);
+</script>

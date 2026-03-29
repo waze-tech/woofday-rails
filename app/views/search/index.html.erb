@@ -1,148 +1,618 @@
-<div class="mx-auto max-w-7xl px-6 py-8">
-  <div class="mb-8">
-    <h1 class="text-3xl font-serif mb-2" style="font-weight: 700; color: #3D2E1F;">Find a Pro</h1>
-    <p style="color: rgba(61, 46, 31, 0.6);">Browse verified pet care professionals near you.</p>
-  </div>
+<%= content_for :head do %>
+  <style>
+    /* Google Places Autocomplete Dropdown Styling */
+    .pac-container {
+      border-radius: 12px;
+      border: 1px solid #E8E0D5;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      margin-top: 8px;
+      font-family: 'Nunito', sans-serif;
+      overflow: hidden;
+    }
+    .pac-item {
+      padding: 12px 16px;
+      cursor: pointer;
+      border-bottom: 1px solid #F5F2ED;
+    }
+    .pac-item:hover {
+      background: #FFF8F0;
+    }
+    .pac-item-query {
+      font-weight: 600;
+      color: #3D2E1F;
+    }
+    .pac-icon {
+      display: none;
+    }
+    .pac-item::before {
+      content: '';
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      margin-right: 12px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 384 512' fill='%238B6F47'%3E%3Cpath d='M215.7 499.2C267 435 384 279.4 384 192C384 86 298 0 192 0S0 86 0 192c0 87.4 117 243 168.3 307.2c12.3 15.3 35.1 15.3 47.4 0zM192 128a64 64 0 1 1 0 128 64 64 0 1 1 0-128z'/%3E%3C/svg%3E");
+      background-size: contain;
+      background-repeat: no-repeat;
+      vertical-align: middle;
+    }
+    .pac-logo::after {
+      display: none !important;
+    }
+    /* Distance slider styling */
+    input[type="range"] {
+      -webkit-appearance: none;
+      height: 4px;
+      background: #E8E0D5;
+      border-radius: 2px;
+      outline: none;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 16px;
+      height: 16px;
+      background: #8B6F47;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+  </style>
+<% end %>
 
-  <!-- Search Filters -->
-  <%= form_with url: search_path, method: :get, class: "mb-8" do |f| %>
-    <div class="border-2 rounded-2xl p-6" style="background-color: #FFFFFF; border-color: rgba(139, 111, 71, 0.15);">
-      <div class="grid md:grid-cols-4 gap-4">
-        <div>
-          <%= f.label :location, "Location", class: "block text-sm font-medium mb-1", style: "color: #3D2E1F;" %>
-          <%= f.text_field :location, 
-              value: params[:location],
-              placeholder: "Enter postcode or city",
-              class: "w-full h-12 px-4 border-2 rounded-xl focus:outline-none focus:ring-2",
-              style: "border-color: rgba(139, 111, 71, 0.2); color: #3D2E1F;" %>
-        </div>
-        <div>
-          <%= f.label :service_type, "Service", class: "block text-sm font-medium mb-1", style: "color: #3D2E1F;" %>
-          <%= f.select :service_type, 
-              options_for_select([
-                ["All Services", ""],
-                ["Grooming", "grooming"],
-                ["Dog Walking", "walking"],
-                ["Pet Sitting", "sitting"],
-                ["Training", "training"]
-              ], params[:service_type]),
-              {},
-              class: "w-full h-12 px-4 border-2 rounded-xl focus:outline-none focus:ring-2",
-              style: "border-color: rgba(139, 111, 71, 0.2); color: #3D2E1F;" %>
-        </div>
-        <div>
-          <%= f.label :min_rating, "Min Rating", class: "block text-sm font-medium mb-1", style: "color: #3D2E1F;" %>
-          <%= f.select :min_rating, 
-              options_for_select([
-                ["Any Rating", ""],
-                ["4+ Stars", "4"],
-                ["3+ Stars", "3"]
-              ], params[:min_rating]),
-              {},
-              class: "w-full h-12 px-4 border-2 rounded-xl focus:outline-none focus:ring-2",
-              style: "border-color: rgba(139, 111, 71, 0.2); color: #3D2E1F;" %>
-        </div>
-        <div>
-          <%= f.label :sort, "Sort By", class: "block text-sm font-medium mb-1", style: "color: #3D2E1F;" %>
-          <%= f.select :sort, 
-              options_for_select([
-                ["Best Match", ""],
-                ["Highest Rated", "rating"],
-                ["Most Reviews", "reviews"],
-                ["Newest", "newest"]
-              ], params[:sort]),
-              {},
-              class: "w-full h-12 px-4 border-2 rounded-xl focus:outline-none focus:ring-2",
-              style: "border-color: rgba(139, 111, 71, 0.2); color: #3D2E1F;" %>
-        </div>
-      </div>
-      <div class="flex items-center justify-between mt-4 pt-4 border-t" style="border-color: rgba(139, 111, 71, 0.1);">
-        <label class="flex items-center gap-2 cursor-pointer">
-          <%= f.check_box :available_this_week, { checked: params[:available_this_week] == "1" }, "1", "0" %>
-          <span class="text-sm" style="color: #3D2E1F;">Available this week</span>
-        </label>
-        <%= f.submit "Search", class: "px-6 py-3 rounded-xl font-semibold cursor-pointer", style: "background-color: #8B6F47; color: #FAF7F2;" %>
-      </div>
-    </div>
-  <% end %>
-
-  <!-- Results -->
-  <% if @pros.empty? %>
-    <div class="rounded-2xl border-2 p-12 text-center" style="border-color: rgba(139, 111, 71, 0.15); background-color: #FFFFFF;">
-      <svg class="mx-auto h-12 w-12 mb-3" fill="none" stroke="rgba(139, 111, 71, 0.4)" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-      </svg>
-      <h3 class="text-lg font-semibold mb-1" style="color: #3D2E1F;">No pros found</h3>
-      <p class="text-sm mb-4" style="color: rgba(61, 46, 31, 0.6);">Try adjusting your filters or search in a different area.</p>
-      <% unless authenticated? %>
-        <%= link_to "Become a Pro", pricing_path, class: "inline-block px-6 py-3 rounded-xl font-semibold", style: "background-color: #8B6F47; color: #FAF7F2;" %>
-      <% end %>
-    </div>
-  <% else %>
-    <p class="text-sm mb-4" style="color: rgba(61, 46, 31, 0.6);"><%= @pros.size %> pros found</p>
-    <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-      <% @pros.each do |pro| %>
-        <div class="rounded-2xl border-2 overflow-hidden flex flex-col hover:shadow-lg transition-all" style="border-color: rgba(139, 111, 71, 0.15); background-color: #FFFFFF;">
-          <div class="p-6 flex-1">
-            <div class="flex items-start gap-4 mb-4">
-              <div class="flex h-14 w-14 items-center justify-center rounded-2xl text-white font-semibold text-xl" style="background-color: #8B6F47;">
-                <%= pro.business_name&.first&.upcase || "P" %>
-              </div>
-              <div class="flex-1 min-w-0">
-                <div class="flex items-center gap-2">
-                  <h3 class="font-semibold text-lg truncate" style="color: #3D2E1F;"><%= pro.business_name %></h3>
-                  <% if pro.is_verified %>
-                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs" style="background-color: rgba(16, 185, 129, 0.1); color: rgb(6, 95, 70);">✓</span>
+<div style="font-family: 'Nunito', sans-serif;">
+  <!-- Filters Bar -->
+  <div style="background: white; border-bottom: 1px solid #E8E0D5;">
+    <%= form_with url: search_path, method: :get, id: "search-form" do |f| %>
+      <div style="display: grid; grid-template-columns: 1fr 1.5fr 1fr 1fr auto; border-bottom: 1px solid #E8E0D5;">
+        
+        <!-- Filters -->
+        <div style="padding: 16px 20px; border-right: 1px solid #E8E0D5; position: relative;">
+          <label class="block text-xs font-semibold mb-1" style="color: #A89F91;">Filters</label>
+          <div class="flex items-center gap-2 cursor-pointer" id="filters-toggle">
+            <img src="https://cdn-icons-png.flaticon.com/512/3460/3460335.png" style="width: 18px; height: 18px; opacity: 0.6;">
+            <span id="filters-summary" class="text-sm font-medium flex-1" style="color: #3D2E1F;">Apply filters</span>
+            <span id="filters-count" class="hidden px-1.5 py-0.5 text-xs font-semibold rounded-full" style="background: #8B6F47; color: white; min-width: 20px; text-align: center;"></span>
+            <svg class="w-4 h-4" fill="none" stroke="#8B6F47" stroke-width="2" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7"/></svg>
+          </div>
+          
+          <!-- Filters Dropdown -->
+          <div id="filters-dropdown" class="hidden" style="position: absolute; top: 100%; left: 0; background: white; border: 1px solid #E8E0D5; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.12); z-index: 100; margin-top: 8px; width: 280px; max-height: 60vh; overflow-y: auto;">
+            
+            <% if authenticated? && Current.user.pets.any? %>
+              <!-- Your Pets -->
+              <div style="padding: 16px; border-bottom: 1px solid #F0EBE3;">
+                <h4 class="text-xs font-bold mb-3" style="color: #A89F91; text-transform: uppercase; letter-spacing: 0.5px;">Your Pets</h4>
+                <div class="space-y-2">
+                  <% Current.user.pets.each do |pet| %>
+                    <label class="flex items-center gap-3 p-2 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
+                      <%= radio_button_tag :pet_id, pet.id, params[:pet_id].to_i == pet.id, class: "rounded-full", style: "accent-color: #8B6F47;" %>
+                      <div class="flex-1">
+                        <span class="text-sm font-medium" style="color: #3D2E1F;"><%= pet.name %></span>
+                        <span class="text-xs ml-2" style="color: #A89F91;"><%= pet.breed.presence || pet.species.titleize %></span>
+                      </div>
+                      <% if pet.specialty_tags.any? %>
+                        <div class="flex gap-1">
+                          <% pet.specialty_tags.first(2).each do |tag| %>
+                            <span class="px-2 py-0.5 text-xs rounded" style="background: #F5F0E8; color: #6B5B4F;"><%= tag %></span>
+                          <% end %>
+                        </div>
+                      <% end %>
+                    </label>
                   <% end %>
+                  <label class="flex items-center gap-3 p-2 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
+                    <%= radio_button_tag :pet_id, "", params[:pet_id].blank?, class: "rounded-full", style: "accent-color: #8B6F47;" %>
+                    <span class="text-sm" style="color: #666;">No pet selected</span>
+                  </label>
                 </div>
-                <% if pro.location.present? %>
-                  <p class="text-sm" style="color: rgba(61, 46, 31, 0.6);"><%= pro.location %></p>
+              </div>
+            <% end %>
+            
+            <!-- Service Type -->
+            <div style="padding: 16px; border-bottom: 1px solid #F0EBE3;">
+              <h4 class="text-xs font-bold mb-3" style="color: #A89F91; text-transform: uppercase; letter-spacing: 0.5px;">Service</h4>
+              <div class="space-y-2">
+                <% [["All Services", ""], ["Dog Grooming", "grooming"], ["Pet Styling", "styling"]].each do |label, value| %>
+                  <label class="flex items-center gap-3 p-2 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
+                    <%= radio_button_tag :service_type, value, params[:service_type] == value || (value == "" && params[:service_type].blank?), class: "rounded-full", style: "accent-color: #8B6F47;" %>
+                    <span class="text-sm" style="color: #3D2E1F;"><%= label %></span>
+                  </label>
                 <% end %>
               </div>
             </div>
-
-            <% if pro.average_rating > 0 %>
-              <div class="flex items-center gap-2 mb-3">
-                <div class="flex">
-                  <% 5.times do |i| %>
-                    <svg class="w-4 h-4 <%= i < pro.average_rating.round ? '' : 'opacity-30' %>" fill="#F59E0B" viewBox="0 0 24 24">
-                      <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
-                    </svg>
-                  <% end %>
-                </div>
-                <span class="text-sm font-medium" style="color: #3D2E1F;"><%= pro.average_rating %></span>
-                <span class="text-sm" style="color: rgba(61, 46, 31, 0.5);">(<%= pro.total_reviews %>)</span>
-              </div>
-            <% end %>
-
-            <% if pro.bio.present? %>
-              <p class="text-sm mb-4 line-clamp-2" style="color: rgba(61, 46, 31, 0.7);"><%= pro.bio %></p>
-            <% end %>
-
-            <% if pro.services.any? %>
+            
+            <!-- Dog Size -->
+            <div style="padding: 16px; border-bottom: 1px solid #F0EBE3;">
+              <h4 class="text-xs font-bold mb-3" style="color: #A89F91; text-transform: uppercase; letter-spacing: 0.5px;">Dog Size</h4>
               <div class="flex flex-wrap gap-2">
-                <% pro.services.limit(3).each do |service| %>
-                  <span class="inline-block px-3 py-1 rounded-full text-xs" style="background-color: rgba(139, 111, 71, 0.1); color: #8B6F47;">
-                    <%= service.name %> · €<%= service.price %>
-                  </span>
+                <% [["Any", ""], ["Small", "small"], ["Medium", "medium"], ["Large", "large"], ["Giant", "giant"]].each do |label, value| %>
+                  <label class="flex items-center gap-2 px-3 py-1.5 rounded-lg cursor-pointer border transition-colors <%= params[:dog_size] == value || (value == '' && params[:dog_size].blank?) ? 'border-amber-600' : '' %>" style="border-color: <%= params[:dog_size] == value || (value == '' && params[:dog_size].blank?) ? '#8B6F47' : '#E8E0D5' %>;">
+                    <%= radio_button_tag :dog_size, value, params[:dog_size] == value || (value == "" && params[:dog_size].blank?), class: "hidden" %>
+                    <span class="text-sm" style="color: #3D2E1F;"><%= label %></span>
+                  </label>
                 <% end %>
               </div>
-            <% end %>
-          </div>
-
-          <div class="border-t p-4" style="border-color: rgba(139, 111, 71, 0.1);">
-            <% if pro.slug.present? %>
-              <%= link_to pro_by_slug_path(slug: pro.slug), class: "block w-full text-center py-3 rounded-xl font-semibold transition-all hover:shadow-md", style: "background-color: #8B6F47; color: #FAF7F2;" do %>
-                View Profile
-              <% end %>
-            <% else %>
-              <%= link_to pro_profile_path(pro), class: "block w-full text-center py-3 rounded-xl font-semibold transition-all hover:shadow-md", style: "background-color: #8B6F47; color: #FAF7F2;" do %>
-                View Profile
-              <% end %>
-            <% end %>
+            </div>
+            
+            <!-- Temperament -->
+            <div style="padding: 16px; border-bottom: 1px solid #F0EBE3;">
+              <h4 class="text-xs font-bold mb-3" style="color: #A89F91; text-transform: uppercase; letter-spacing: 0.5px;">Temperament Experience</h4>
+              <div class="flex flex-wrap gap-2">
+                <% [["Any", ""], ["Calm", "calm"], ["Anxious", "anxious"], ["Energetic", "energetic"], ["Nervous", "nervous"], ["Reactive", "reactive"]].each do |label, value| %>
+                  <label class="flex items-center gap-2 px-3 py-1.5 rounded-lg cursor-pointer border transition-colors" style="border-color: <%= params[:temperament] == value ? '#8B6F47' : '#E8E0D5' %>;">
+                    <%= radio_button_tag :temperament, value, params[:temperament] == value || (value == "" && params[:temperament].blank?), class: "hidden" %>
+                    <span class="text-sm" style="color: #3D2E1F;"><%= label %></span>
+                  </label>
+                <% end %>
+              </div>
+            </div>
+            
+            <!-- Special Requirements -->
+            <div style="padding: 16px; border-bottom: 1px solid #F0EBE3;">
+              <h4 class="text-xs font-bold mb-3" style="color: #A89F91; text-transform: uppercase; letter-spacing: 0.5px;">Special Requirements</h4>
+              <div class="space-y-2">
+                <label class="flex items-center gap-3 p-2 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
+                  <%= check_box_tag :accepts_puppies, "1", params[:accepts_puppies] == "1", class: "rounded", style: "accent-color: #8B6F47;" %>
+                  <span class="text-sm" style="color: #3D2E1F;">Works with puppies</span>
+                </label>
+                <label class="flex items-center gap-3 p-2 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
+                  <%= check_box_tag :accepts_seniors, "1", params[:accepts_seniors] == "1", class: "rounded", style: "accent-color: #8B6F47;" %>
+                  <span class="text-sm" style="color: #3D2E1F;">Works with senior dogs</span>
+                </label>
+                <label class="flex items-center gap-3 p-2 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
+                  <%= check_box_tag :accepts_special_needs, "1", params[:accepts_special_needs] == "1", class: "rounded", style: "accent-color: #8B6F47;" %>
+                  <span class="text-sm" style="color: #3D2E1F;">Special needs experience</span>
+                </label>
+              </div>
+            </div>
+            
+            <!-- Breed Experience -->
+            <div style="padding: 16px;">
+              <h4 class="text-xs font-bold mb-3" style="color: #A89F91; text-transform: uppercase; letter-spacing: 0.5px;">Breed Experience</h4>
+              <%= text_field_tag :breed_specialty, params[:breed_specialty], 
+                  placeholder: "e.g., Golden Retriever, Poodle...",
+                  class: "w-full px-3 py-2 text-sm rounded-lg border",
+                  style: "border-color: #E8E0D5; color: #3D2E1F;" %>
+            </div>
+            
+            <!-- Apply Button -->
+            <div style="padding: 16px; background: #FAFAFA; border-top: 1px solid #F0EBE3;">
+              <div class="flex gap-3">
+                <button type="button" id="clear-filters" class="flex-1 py-2.5 rounded-lg text-sm font-medium" style="color: #666; border: 1px solid #E8E0D5;">
+                  Clear all
+                </button>
+                <button type="submit" class="flex-1 py-2.5 rounded-lg text-sm font-semibold text-white" style="background: #8B6F47;">
+                  Apply filters
+                </button>
+              </div>
+            </div>
           </div>
         </div>
-      <% end %>
+        
+        <!-- Location -->
+        <div style="padding: 16px 20px; border-right: 1px solid #E8E0D5;">
+          <div class="flex items-center justify-between mb-1">
+            <label class="text-xs font-semibold" style="color: #A89F91;">Location</label>
+            <div class="flex items-center gap-2">
+              <span id="distance-label" class="text-xs font-medium" style="color: #8B6F47;">10 km</span>
+              <%= f.range_field :distance, min: 1, max: 50, value: params[:distance] || 10, id: "distance-slider", style: "width: 60px;" %>
+            </div>
+          </div>
+          <div class="flex items-center gap-3" style="position: relative;">
+            <svg width="18" height="18" viewBox="0 0 384 512" style="flex-shrink: 0; opacity: 0.5;">
+              <path fill="#8B6F47" d="M215.7 499.2C267 435 384 279.4 384 192C384 86 298 0 192 0S0 86 0 192c0 87.4 117 243 168.3 307.2c12.3 15.3 35.1 15.3 47.4 0zM192 128a64 64 0 1 1 0 128 64 64 0 1 1 0-128z"/>
+            </svg>
+            <%= f.text_field :location, 
+                value: params[:location], 
+                placeholder: "Enter address", 
+                id: "location-input", 
+                autocomplete: "off", 
+                class: "border-0 bg-transparent text-sm font-medium flex-1", 
+                style: "color: #3D2E1F; outline: none;" %>
+            <button type="button" id="current-location-btn" title="Use my location" style="padding: 8px; cursor: pointer; display: flex; align-items: center; background: #F5F2ED; border-radius: 8px;">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8B6F47" stroke-width="2.5">
+                <circle cx="12" cy="12" r="3"/>
+                <line x1="12" y1="2" x2="12" y2="6"/>
+                <line x1="12" y1="18" x2="12" y2="22"/>
+                <line x1="2" y1="12" x2="6" y2="12"/>
+                <line x1="18" y1="12" x2="22" y2="12"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+        
+        <!-- Date -->
+        <div style="padding: 16px 20px; border-right: 1px solid #E8E0D5;">
+          <label class="block text-xs font-semibold mb-1" style="color: #A89F91;">Date</label>
+          <div class="flex items-center gap-2">
+            <img src="https://cdn-icons-png.flaticon.com/512/2693/2693507.png" style="width: 16px; height: 16px; opacity: 0.6;">
+            <%= f.date_field :date, 
+                value: params[:date] || Date.today, 
+                min: Date.today,
+                class: "border-0 bg-transparent text-sm font-medium w-full", 
+                style: "color: #3D2E1F; outline: none; cursor: pointer;" %>
+          </div>
+        </div>
+        
+        <!-- Time -->
+        <div style="padding: 16px 20px; border-right: 1px solid #E8E0D5;">
+          <label class="block text-xs font-semibold mb-1" style="color: #A89F91;">Time</label>
+          <div class="flex items-center gap-2">
+            <img src="https://cdn-icons-png.flaticon.com/512/2972/2972531.png" style="width: 16px; height: 16px; opacity: 0.6;">
+            <%= f.select :time,
+                options_for_select([
+                  ["Any time", ""],
+                  ["Morning (8am-12pm)", "morning"],
+                  ["Afternoon (12pm-5pm)", "afternoon"],
+                  ["Evening (5pm-9pm)", "evening"]
+                ], params[:time]),
+                {},
+                class: "border-0 bg-transparent text-sm font-medium w-full", style: "color: #3D2E1F; outline: none; cursor: pointer;" %>
+          </div>
+        </div>
+        
+        <!-- Search Button -->
+        <div style="padding: 16px 20px; display: flex; align-items: center;">
+          <%= f.submit "Search", class: "px-6 py-2 text-sm font-bold cursor-pointer", style: "background: #8B6F47; color: white;" %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+
+  <!-- Main Content -->
+  <div class="flex" style="height: calc(100vh - 130px);">
+    
+    <!-- Pro List (Left) -->
+    <div id="pro-list" class="overflow-y-auto" style="width: 45%; background: white;">
+      <div class="p-5">
+        <p class="text-sm mb-4" style="color: #A89F91;"><%= @pros.size %> pet carers near you</p>
+        
+        <% if @pros.empty? %>
+          <div class="py-12 text-center">
+            <p class="text-4xl mb-3">🐾</p>
+            <p class="font-semibold" style="color: #3D2E1F;">No pros found in this area</p>
+            <p class="text-sm mt-1" style="color: #A89F91;">Try adjusting your search</p>
+          </div>
+        <% else %>
+          <% @pros.each_with_index do |pro, index| %>
+            <div class="py-4 pro-card cursor-pointer transition-all" 
+                 style="border-bottom: 1px solid #F5F2ED;"
+                 data-lat="<%= pro.latitude %>"
+                 data-lng="<%= pro.longitude %>"
+                 data-id="<%= pro.id %>"
+                 data-index="<%= index + 1 %>">
+              
+              <div class="flex gap-4">
+                <!-- Photo -->
+                <div class="flex-shrink-0 relative">
+                  <% first_photo = pro.portfolio_photos.order(:sort_order).first %>
+                  <div class="w-20 h-20 rounded-lg flex items-center justify-center text-2xl font-bold overflow-hidden" style="background: #E8E0D5; color: #8B6F47;">
+                    <% if first_photo&.url.present? %>
+                      <img src="<%= first_photo.url %>" alt="" class="w-full h-full object-cover">
+                    <% elsif first_photo&.image&.attached? %>
+                      <%= image_tag first_photo.image, class: "w-full h-full object-cover" %>
+                    <% else %>
+                      <%= pro.business_name&.first&.upcase || "P" %>
+                    <% end %>
+                  </div>
+                  <% if pro.is_verified %>
+                    <span class="absolute -bottom-1 -right-1 w-5 h-5 rounded-full flex items-center justify-center text-xs" style="background: #22C55E; color: white;">✓</span>
+                  <% end %>
+                </div>
+                
+                <!-- Info -->
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-start justify-between">
+                    <div>
+                      <h3 class="font-bold" style="color: #3D2E1F;"><%= pro.business_name %></h3>
+                      <p class="text-sm" style="color: #666;"><%= pro.bio&.truncate(60) || "Pet care professional" %></p>
+                    </div>
+                    <div class="text-right flex-shrink-0 ml-2">
+                      <p class="text-xs" style="color: #A89F91;">from</p>
+                      <p class="text-lg font-bold" style="color: #3D2E1F;">€<%= pro.services.minimum(:price) || pro.hourly_rate || '?' %></p>
+                    </div>
+                  </div>
+                  
+                  <!-- Rating -->
+                  <div class="flex items-center gap-2 mt-1">
+                    <% if pro.average_rating > 0 %>
+                      <span class="text-sm" style="color: #F59E0B;">★ <%= pro.average_rating %></span>
+                      <span class="text-xs" style="color: #A89F91;">(<%= pro.total_reviews %>)</span>
+                    <% end %>
+                    <span class="text-xs" style="color: #A89F91;"><%= pro.location %></span>
+                  </div>
+                  
+                  <!-- Services -->
+                  <% if pro.services.any? %>
+                    <div class="flex flex-wrap gap-1 mt-2">
+                      <% pro.services.limit(3).each do |service| %>
+                        <span class="text-xs px-2 py-0.5" style="background: #F5F2ED; color: #8B6F47;">
+                          <%= service.name %>
+                        </span>
+                      <% end %>
+                    </div>
+                  <% end %>
+                </div>
+              </div>
+              
+              <!-- View Profile -->
+              <div class="mt-2 text-right">
+                <% if pro.slug.present? %>
+                  <%= link_to "View Profile →", pro_by_slug_path(slug: pro.slug), class: "text-sm font-semibold", style: "color: #8B6F47;" %>
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+        <% end %>
+      </div>
     </div>
-  <% end %>
+    
+    <!-- Map (Right) -->
+    <div style="width: 55%; position: relative; background: #F5F2ED;">
+      <div id="map" style="width: 100%; height: 100%; min-height: 500px;"></div>
+    </div>
+  </div>
 </div>
+
+<script>
+function initSearchPage() {
+  // Filters dropdown toggle
+  const filtersToggle = document.getElementById('filters-toggle');
+  const filtersDropdown = document.getElementById('filters-dropdown');
+  const filtersSummary = document.getElementById('filters-summary');
+  
+  if (filtersToggle && filtersDropdown) {
+    filtersToggle.addEventListener('click', (e) => {
+      e.stopPropagation();
+      filtersDropdown.classList.toggle('hidden');
+    });
+    
+    // Close when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!filtersDropdown.contains(e.target) && !filtersToggle.contains(e.target)) {
+        filtersDropdown.classList.add('hidden');
+      }
+    });
+    
+    // Clear filters button
+    document.getElementById('clear-filters')?.addEventListener('click', () => {
+      const form = document.getElementById('search-form');
+      form.querySelectorAll('input[type="radio"]').forEach(r => {
+        if (r.value === '') r.checked = true;
+        else r.checked = false;
+      });
+      form.querySelectorAll('input[type="checkbox"]').forEach(c => c.checked = false);
+      form.querySelector('input[name="breed_specialty"]').value = '';
+      form.querySelector('input[name="pet_id"]')?.forEach(r => {
+        if (r.value === '') r.checked = true;
+      });
+      updateFiltersSummary();
+    });
+    
+    // Update summary when filters change
+    filtersDropdown.querySelectorAll('input').forEach(input => {
+      input.addEventListener('change', updateFiltersSummary);
+    });
+    
+    function updateFiltersSummary() {
+      let count = 0;
+      const filtersCount = document.getElementById('filters-count');
+      
+      // Count active filters
+      const petRadio = document.querySelector('input[name="pet_id"]:checked');
+      if (petRadio && petRadio.value) count++;
+      
+      const serviceRadio = document.querySelector('input[name="service_type"]:checked');
+      if (serviceRadio && serviceRadio.value) count++;
+      
+      const sizeRadio = document.querySelector('input[name="dog_size"]:checked');
+      if (sizeRadio && sizeRadio.value) count++;
+      
+      const tempRadio = document.querySelector('input[name="temperament"]:checked');
+      if (tempRadio && tempRadio.value) count++;
+      
+      document.querySelectorAll('input[type="checkbox"]:checked').forEach(() => count++);
+      
+      const breedInput = document.querySelector('input[name="breed_specialty"]');
+      if (breedInput && breedInput.value.trim()) count++;
+      
+      if (count > 0) {
+        filtersCount.textContent = count;
+        filtersCount.classList.remove('hidden');
+        filtersSummary.textContent = count + ' filter' + (count > 1 ? 's' : '') + ' applied';
+      } else {
+        filtersCount.classList.add('hidden');
+        filtersSummary.textContent = 'Apply filters';
+      }
+    }
+    
+    updateFiltersSummary();
+  }
+  
+  // Initialize Places Autocomplete
+  const locationInput = document.getElementById('location-input');
+  if (locationInput) {
+    const autocomplete = new google.maps.places.Autocomplete(locationInput, {
+      types: ['geocode'],
+      componentRestrictions: { country: ['ie', 'gb', 'au'] }
+    });
+    
+    // Auto-submit on place select
+    autocomplete.addListener('place_changed', () => {
+      document.getElementById('search-form').submit();
+    });
+  }
+  
+  // Distance slider
+  const distanceSlider = document.getElementById('distance-slider');
+  const distanceLabel = document.getElementById('distance-label');
+  if (distanceSlider && distanceLabel) {
+    distanceSlider.addEventListener('input', () => {
+      distanceLabel.textContent = distanceSlider.value + ' km';
+    });
+  }
+
+  // Current Location button
+  const currentLocationBtn = document.getElementById('current-location-btn');
+  if (currentLocationBtn) {
+    currentLocationBtn.addEventListener('click', () => {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            const geocoder = new google.maps.Geocoder();
+            const latlng = {
+              lat: position.coords.latitude,
+              lng: position.coords.longitude
+            };
+            geocoder.geocode({ location: latlng }, (results, status) => {
+              if (status === 'OK' && results[0]) {
+                document.getElementById('location-input').value = results[0].formatted_address;
+                document.getElementById('search-form').submit();
+              }
+            });
+          },
+          (error) => {
+            alert('Could not get your location. Please enter an address.');
+          }
+        );
+      }
+    });
+  }
+  
+  // Initialize Map
+  const mapElement = document.getElementById('map');
+  if (!mapElement || typeof google === 'undefined') {
+    console.error('Map element or Google Maps not found');
+    return;
+  }
+  
+  const mapOptions = {
+    center: { lat: 53.3498, lng: -6.2603 },
+    zoom: 12,
+    styles: [
+      { featureType: "poi", stylers: [{ visibility: "off" }] },
+      { featureType: "transit", stylers: [{ visibility: "off" }] }
+    ],
+    mapTypeControl: false,
+    streetViewControl: false,
+    fullscreenControl: false
+  };
+  
+  const map = new google.maps.Map(mapElement, mapOptions);
+  const bounds = new google.maps.LatLngBounds();
+  const markers = [];
+  const infoWindow = new google.maps.InfoWindow();
+
+  const proCards = document.querySelectorAll('.pro-card');
+
+  proCards.forEach((card, i) => {
+    const lat = parseFloat(card.dataset.lat);
+    const lng = parseFloat(card.dataset.lng);
+    const index = card.dataset.index;
+    
+    if (lat && lng) {
+      const position = { lat, lng };
+      bounds.extend(position);
+      
+      // Custom brown pin marker
+      const pinSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" fill="%238B6F47"><path d="M215.7 499.2C267 435 384 279.4 384 192C384 86 298 0 192 0S0 86 0 192c0 87.4 117 243 168.3 307.2c12.3 15.3 35.1 15.3 47.4 0zM192 128a64 64 0 1 1 0 128 64 64 0 1 1 0-128z"/></svg>`;
+      const marker = new google.maps.Marker({
+        position: position,
+        map: map,
+        icon: {
+          url: 'data:image/svg+xml,' + encodeURIComponent(pinSvg.replace('%238B6F47', '#8B6F47')),
+          scaledSize: new google.maps.Size(32, 40),
+          anchor: new google.maps.Point(16, 40)
+        }
+      });
+      
+      const name = card.querySelector('h3')?.textContent || 'Pro';
+      const price = card.querySelector('.text-lg')?.textContent || '';
+      
+      marker.addListener('click', () => {
+        // Reset all cards
+        document.querySelectorAll('.pro-card').forEach(c => {
+          c.style.background = 'white';
+          c.style.borderLeft = '3px solid transparent';
+        });
+        
+        // Highlight selected card
+        card.style.background = '#FFF8F0';
+        card.style.borderLeft = '3px solid #8B6F47';
+        
+        // Slot machine scroll - smooth scroll to top of list container
+        const listContainer = document.getElementById('pro-list');
+        const cardTop = card.offsetTop - listContainer.offsetTop;
+        
+        // Smooth slot machine effect
+        const start = listContainer.scrollTop;
+        const distance = cardTop - start;
+        const duration = 600; // ms - not too fast
+        let startTime = null;
+        
+        function easeOutCubic(t) {
+          return 1 - Math.pow(1 - t, 3);
+        }
+        
+        function animateScroll(currentTime) {
+          if (!startTime) startTime = currentTime;
+          const elapsed = currentTime - startTime;
+          const progress = Math.min(elapsed / duration, 1);
+          const eased = easeOutCubic(progress);
+          
+          listContainer.scrollTop = start + (distance * eased);
+          
+          if (progress < 1) {
+            requestAnimationFrame(animateScroll);
+          }
+        }
+        
+        requestAnimationFrame(animateScroll);
+        
+        infoWindow.setContent('<div style="font-family: Nunito, sans-serif; padding: 4px;"><strong>' + name + '</strong><br>' + price + '</div>');
+        infoWindow.open(map, marker);
+      });
+      
+      marker.addListener('mouseover', () => {
+        card.style.background = '#FAFAF8';
+      });
+      
+      marker.addListener('mouseout', () => {
+        if (!card.style.borderLeft.includes('#8B6F47')) {
+          card.style.background = 'white';
+        }
+      });
+      
+      const hoverSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" fill="%233D2E1F"><path d="M215.7 499.2C267 435 384 279.4 384 192C384 86 298 0 192 0S0 86 0 192c0 87.4 117 243 168.3 307.2c12.3 15.3 35.1 15.3 47.4 0zM192 128a64 64 0 1 1 0 128 64 64 0 1 1 0-128z"/></svg>`;
+      
+      card.addEventListener('mouseenter', () => {
+        marker.setIcon({
+          url: 'data:image/svg+xml,' + encodeURIComponent(hoverSvg.replace('%233D2E1F', '#3D2E1F')),
+          scaledSize: new google.maps.Size(40, 50),
+          anchor: new google.maps.Point(20, 50)
+        });
+        infoWindow.setContent('<div style="font-family: Nunito, sans-serif; padding: 4px;"><strong>' + name + '</strong><br>' + price + '</div>');
+        infoWindow.open(map, marker);
+      });
+      
+      card.addEventListener('mouseleave', () => {
+        marker.setIcon({
+          url: 'data:image/svg+xml,' + encodeURIComponent(pinSvg.replace('%238B6F47', '#8B6F47')),
+          scaledSize: new google.maps.Size(32, 40),
+          anchor: new google.maps.Point(16, 40)
+        });
+        infoWindow.close();
+      });
+      
+      markers.push(marker);
+    }
+  });
+
+  // Fit map to markers
+  if (markers.length > 0) {
+    map.fitBounds(bounds);
+    const listener = google.maps.event.addListener(map, 'idle', () => {
+      if (map.getZoom() > 15) map.setZoom(15);
+      google.maps.event.removeListener(listener);
+    });
+  }
+}
+</script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCPEd-Yx7RVOZVZ2KUdXH0yyeP3rdOjan0&libraries=places&callback=initSearchPage" async defer></script>

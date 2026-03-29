@@ -34,9 +34,9 @@ class Service < ApplicationRecord
 
   def payment_type_label
     case payment_type
-    when "per_hour" then "/hour"
-    when "per_day" then "/day"
-    else "/session"
+    when "per_hour" then "per hour"
+    when "per_day" then "per day"
+    else "per visit"
     end
   end
 end

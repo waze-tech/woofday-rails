@@ -5,8 +5,11 @@ class Review < ApplicationRecord
   has_one :pro_profile, through: :booking
   has_many_attached :photos
 
+  # Alias content to comment (column is 'comment')
+  alias_attribute :content, :comment
+
   validates :rating, presence: true, inclusion: { in: 1..5 }
-  validates :content, length: { maximum: 1000 }
+  validates :comment, length: { maximum: 1000 }
   validates :booking_id, uniqueness: { message: "already has a review" }
   validate :check_profanity, on: :create
 

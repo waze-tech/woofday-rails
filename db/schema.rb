@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_28_220426) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_29_173541) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -90,13 +90,19 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_28_220426) do
     t.integer "age"
     t.string "breed"
     t.datetime "created_at", null: false
+    t.boolean "has_special_needs", default: false
+    t.boolean "is_puppy", default: false
+    t.boolean "is_senior", default: false
     t.string "name"
     t.text "notes"
     t.string "photo_url"
     t.string "size"
+    t.text "special_needs_details"
     t.string "species"
+    t.string "temperament"
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
+    t.decimal "weight_kg", precision: 5, scale: 2
     t.index ["user_id"], name: "index_pets_on_user_id"
   end
 
@@ -111,26 +117,36 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_28_220426) do
   end
 
   create_table "pro_profiles", force: :cascade do |t|
+    t.boolean "accepts_puppies", default: true
+    t.boolean "accepts_senior_dogs", default: true
+    t.boolean "accepts_special_needs", default: false
     t.text "bio"
+    t.text "breed_specialties"
     t.string "business_name"
     t.datetime "created_at", null: false
+    t.string "dog_sizes", default: ""
     t.string "email"
+    t.boolean "has_garden", default: false
+    t.string "home_type"
     t.decimal "hourly_rate"
     t.string "instagram"
     t.boolean "is_verified", default: false
     t.decimal "latitude", precision: 10, scale: 8
     t.string "location"
     t.decimal "longitude", precision: 11, scale: 8
+    t.string "other_pets"
     t.string "phone"
     t.integer "service_radius_km", default: 10
     t.text "services"
     t.boolean "setup_completed"
     t.integer "setup_step"
     t.string "slug"
+    t.boolean "smoking_home", default: false
     t.string "stripe_customer_id"
     t.string "stripe_subscription_id"
     t.datetime "subscription_expires_at"
     t.string "subscription_tier", default: "free"
+    t.string "temperaments", default: ""
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
     t.boolean "verified"
